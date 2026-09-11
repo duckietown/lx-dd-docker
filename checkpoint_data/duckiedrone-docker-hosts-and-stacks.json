@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "two-docker-hosts",
+      "question": "What is the difference between the base station's Docker host and a physical Duckiedrone's Docker host?",
+      "model_answer": "The base-station daemon owns the `lx-docker-*` practice inventory. The physical Duckiedrone daemon owns its sensor, communication, and flight-support services. Each host has its own images and containers.",
+      "evidence": [
+        {
+          "label": "Two Docker hosts",
+          "anchor": "#two-docker-hosts"
+        }
+      ]
+    },
+    {
+      "id": "managed-stacks",
+      "question": "Which three stacks does a standard `dts duckiebot update DUCKIEDRONE_NAME` deploy, where `DUCKIEDRONE_NAME` is the name of your Duckiedrone?",
+      "model_answer": "It deploys `robot/basics`, `duckietown/duckiedrone`, and `ros2/duckiedrone`.",
+      "evidence": [
+        {
+          "label": "Duckiedrone stacks",
+          "anchor": "#duckiedrone-stacks"
+        }
+      ]
+    }
+  ]
+}

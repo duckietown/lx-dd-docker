@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "dts-stack-and-docker-run",
+      "question": "How do local Docker exercises differ from running `dts duckiebot update DUCKIEDRONE_NAME` in a base-station terminal?",
+      "model_answer": "The local exercises use the base station's Docker daemon. The update command names the Duckiedrone, downloads its images, and starts its default stacks, even though the command is entered on the base station.",
+      "evidence": [
+        {
+          "label": "Deployment boundary",
+          "anchor": "#deployment-boundary"
+        }
+      ]
+    },
+    {
+      "id": "remote-docker-security",
+      "question": "Why is the terminal's location not enough to determine which computer a Docker command affects?",
+      "model_answer": "The Docker client sends commands to the daemon selected by its connection settings. A client on the base station can use the local daemon or a remote Duckiedrone daemon; Table 1 distinguishes the command's terminal from its Docker host.",
+      "evidence": [
+        {
+          "label": "Keep the roles separate",
+          "anchor": "#keep-the-roles-separate"
+        }
+      ]
+    }
+  ]
+}

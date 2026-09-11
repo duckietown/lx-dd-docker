@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "dtps-role",
+      "question": "What role does `dtps` play between a sensor driver and a ROS 2 bridge container?",
+      "model_answer": "DTPS carries the driver's sensor readings to the bridge, which republishes them for ROS 2 programs.",
+      "evidence": [
+        {
+          "label": "Duckiedrone data paths",
+          "anchor": "#duckiedrone-data-paths"
+        }
+      ]
+    },
+    {
+      "id": "flight-controller-boundary",
+      "question": "Where does flight-control firmware run on a physical Duckiedrone, and how does `ros2-mavros` make its data available?",
+      "model_answer": "PX4 runs on the flight-controller board. The ros2-mavros container exchanges MAVLink messages with it and exposes state and telemetry to ROS 2 programs.",
+      "evidence": [
+        {
+          "label": "Duckiedrone data paths",
+          "anchor": "#duckiedrone-data-paths"
+        }
+      ]
+    },
+    {
+      "id": "platform-privileges",
+      "question": "Why do sensor drivers and ROS 2 bridges need different connections, and how does a local exercise differ?",
+      "model_answer": "Drivers need to read sensor hardware, while bridges need the driver's published data. A local exercise needs only its own application's files and connections.",
+      "evidence": [
+        {
+          "label": "Optional services",
+          "anchor": "#optional-services"
+        }
+      ]
+    }
+  ]
+}

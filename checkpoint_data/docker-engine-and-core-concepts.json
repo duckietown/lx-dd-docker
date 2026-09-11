@@ -1,0 +1,59 @@
+{
+  "checkpoints": [
+    {
+      "id": "docker-daemon",
+      "question": "Which program receives and carries out a `docker` command?",
+      "model_answer": "The Docker daemon, `dockerd`, receives API requests from the `docker` command-line interface and creates or manages Docker objects.",
+      "evidence": [
+        {
+          "label": "Docker Engine is client-server software",
+          "anchor": "#docker-engine-is-client-server-software"
+        }
+      ]
+    },
+    {
+      "id": "image-and-container",
+      "question": "How does an image differ from a container?",
+      "model_answer": "An image is a read-only template used to create containers. A container is a runnable instance of an image with its own configuration and writable layer.",
+      "evidence": [
+        {
+          "label": "Images, containers, and registries",
+          "anchor": "#images-containers-and-registries"
+        }
+      ]
+    },
+    {
+      "id": "registry-purpose",
+      "question": "What does a container registry store?",
+      "model_answer": "A registry stores and distributes container images. Pulling obtains an image from a registry, and pushing publishes an image to one.",
+      "evidence": [
+        {
+          "label": "Images, containers, and registries",
+          "anchor": "#images-containers-and-registries"
+        }
+      ]
+    },
+    {
+      "id": "docker-context",
+      "question": "Why is a Docker context important before using a modifying command?",
+      "model_answer": "A Docker context tells the client which daemon receives a command. Checking it first helps ensure a modifying command targets the intended Docker host.",
+      "evidence": [
+        {
+          "label": "Docker Engine is client-server software",
+          "anchor": "#docker-engine-is-client-server-software"
+        }
+      ]
+    },
+    {
+      "id": "container-and-virtual-machine",
+      "question": "Why is a Linux container not the same as a virtual machine?",
+      "model_answer": "A Linux container shares the host kernel and uses kernel features such as namespaces for isolation. A virtual machine runs a separate guest operating system and kernel.",
+      "evidence": [
+        {
+          "label": "Containers and the host",
+          "anchor": "#containers-and-the-host"
+        }
+      ]
+    }
+  ]
+}
