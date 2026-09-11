@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "registry-repository-and-tag",
+      "question": "What are the registry, repository, and tag in `docker.io/duckietown/dd-linux-and-networking:ente-arm64v8`?",
+      "model_answer": "`docker.io` is the registry, `duckietown/dd-linux-and-networking` is the repository, and `ente-arm64v8` is the tag that identifies a version or variant.",
+      "evidence": [
+        {
+          "label": "Docker client, daemon, and registry",
+          "anchor": "#docker-client-daemon-and-registry"
+        }
+      ]
+    },
+    {
+      "id": "platform-architecture",
+      "question": "What platform difference can prevent a laptop image from running on a Duckiedrone?",
+      "model_answer": "The image can contain instructions for a different CPU architecture. Many laptops use `linux/amd64`, while a DD24 Duckiedrone uses `linux/arm64`.",
+      "evidence": [
+        {
+          "label": "Processor architecture and platform",
+          "anchor": "#processor-architecture-and-platform"
+        }
+      ]
+    },
+    {
+      "id": "explicit-tag",
+      "question": "Why should a Docker command use an explicit image tag rather than `latest`?",
+      "model_answer": "An explicit tag identifies the intended version for repeatable work. The mutable `latest` label can be changed by an image publisher.",
+      "evidence": [
+        {
+          "label": "Docker client, daemon, and registry",
+          "anchor": "#docker-client-daemon-and-registry"
+        }
+      ]
+    }
+  ]
+}

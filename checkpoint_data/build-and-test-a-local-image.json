@@ -1,0 +1,48 @@
+{
+  "checkpoints": [
+    {
+      "id": "build-context",
+      "question": "What is a Docker build context?",
+      "model_answer": "It is the directory Docker receives for a build. `Dockerfile` instructions such as `COPY` can use files supplied from that directory.",
+      "evidence": [
+        {
+          "label": "Inspect the build context",
+          "anchor": "#inspect-the-build-context"
+        }
+      ]
+    },
+    {
+      "id": "expose-and-publish",
+      "question": "What is the difference between `EXPOSE 8080` and `--publish 127.0.0.1:8088:8080`?",
+      "model_answer": "`EXPOSE` documents an intended container port. The `--publish` option actually forwards host port `8088` to container port `8080` at runtime.",
+      "evidence": [
+        {
+          "label": "Publish a local web port",
+          "anchor": "#publish-a-local-web-port"
+        }
+      ]
+    },
+    {
+      "id": "published-loopback-context",
+      "question": "When the later `curl` command uses `127.0.0.1:8088`, what does that address name, and what would `127.0.0.1` name inside the web container?",
+      "model_answer": "It reaches the base-station side of the published port mapping because the client runs on the base station. Within the web container, the same loopback address reaches that container rather than the base station.",
+      "evidence": [
+        {
+          "label": "Publish a local web port",
+          "anchor": "#publish-a-local-web-port"
+        }
+      ]
+    },
+    {
+      "id": "curl-verification",
+      "question": "What does a successful `curl` response prove beyond a running container?",
+      "model_answer": "It verifies that the application responds over the published port, not merely that its container process exists.",
+      "evidence": [
+        {
+          "label": "Request the application response",
+          "anchor": "#request-the-application-response"
+        }
+      ]
+    }
+  ]
+}

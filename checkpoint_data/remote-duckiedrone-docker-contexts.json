@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "context-creation-timing",
+      "question": "What does creating an SSH-backed Docker context change, and when does it first contact the remote daemon?",
+      "model_answer": "Creation changes only the local Docker configuration. The remote daemon is contacted when a command actually uses that context.",
+      "evidence": [
+        {
+          "label": "Create an authorized Duckiedrone context",
+          "anchor": "#create-an-authorized-duckiedrone-context"
+        }
+      ]
+    },
+    {
+      "id": "separate-inventories",
+      "question": "Why are local images and containers different from a Duckiedrone's images and containers?",
+      "model_answer": "Each daemon owns its own image cache and container store, so the base station and Duckiedrone inventories are separate.",
+      "evidence": [
+        {
+          "label": "Compare local and Duckiedrone resources",
+          "anchor": "#compare-local-and-duckiedrone-resources"
+        }
+      ]
+    },
+    {
+      "id": "context-authorization",
+      "question": "What does an explicit remote context avoid, and which requirements remain?",
+      "model_answer": "It avoids opening an interactive remote shell. Valid credentials, permission to access the remote daemon, and a working connection are still required.",
+      "evidence": [
+        {
+          "label": "Run the same command two ways",
+          "anchor": "#run-the-same-command-two-ways"
+        }
+      ]
+    }
+  ]
+}
