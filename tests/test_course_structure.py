@@ -45,13 +45,15 @@ INTERACTIVE_CHECKPOINT_NOTEBOOKS = set(REQUIRED_NOTEBOOKS)
 CHECKPOINT_CODE_SOURCE = [
     "import sys",
     "from pathlib import Path",
-    "",
-    "course_root = Path.cwd().parent",
-    'if (course_root / "packages").is_dir():',
-    "    sys.path.insert(0, str(course_root))",
-    "",
+    "working_directory = Path.cwd()",
+    "course_root = working_directory.parent",
+    'packages_directory = course_root / "packages"',
+    "packages_directory_exists = packages_directory.is_dir()",
+    "if packages_directory_exists:",
+    "    course_root_path = str(course_root)",
+    "    module_search_path = sys.path",
+    "    module_search_path.insert(0, course_root_path)",
     "from packages.checkpoint_self_check import display_checkpoint_self_checks",
-    "",
     "display_checkpoint_self_checks()",
 ]
 
