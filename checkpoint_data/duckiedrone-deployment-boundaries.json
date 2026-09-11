@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "dts-stack-and-docker-run",
+      "question": "Why is an authorized `dts stack up -H DUCKIEDRONE_NAME STACK_NAME` deployment different from a local `docker run` exercise, where `DUCKIEDRONE_NAME` is the Duckiedrone name and `STACK_NAME` is the stack named by the authorized operating procedure?",
+      "model_answer": "`dts stack up` starts a named stack through an authorized platform-deployment workflow on a Duckiedrone daemon. A local Docker exercise works only with learner-owned base-station resources.",
+      "evidence": [
+        {
+          "label": "Deployment boundary",
+          "anchor": "#deployment-boundary"
+        }
+      ]
+    },
+    {
+      "id": "remote-docker-security",
+      "question": "Why must you not infer a remote Docker endpoint's security configuration from port `2375` or `2376` alone?",
+      "model_answer": "A port number does not show the endpoint's real access controls. Network configuration, authorization, and certificate verification determine whether an endpoint is secured.",
+      "evidence": [
+        {
+          "label": "Deployment boundary",
+          "anchor": "#deployment-boundary"
+        }
+      ]
+    }
+  ]
+}

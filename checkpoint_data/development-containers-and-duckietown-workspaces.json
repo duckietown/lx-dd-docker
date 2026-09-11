@@ -1,0 +1,42 @@
+{
+  "checkpoints": [
+    {
+      "id": "terminal-and-daemon",
+      "question": "What can differ between the terminal where you type `docker` and the Docker daemon that receives its request?",
+      "model_answer": "The terminal's filesystem and shell context can differ from the daemon location. A Docker client can communicate with a local, remote, or in-container daemon.",
+      "evidence": [
+        {
+          "label": "Separate the shell from the Docker daemon",
+          "anchor": "#separate-the-shell-from-the-docker-daemon"
+        }
+      ]
+    },
+    {
+      "id": "environment-verification",
+      "question": "Which read-only commands identify the current Docker target before a modifying command?",
+      "model_answer": "`docker context show` reports the selected context name, `DOCKER_HOST` and `DOCKER_CONTEXT` show target overrides, and `docker version` contacts the resulting daemon. `hostname`, `pwd`, and `command -v docker` identify the shell environment.",
+      "evidence": [
+        {
+          "label": "Verify the current environment",
+          "anchor": "#verify-the-current-environment"
+        }
+      ]
+    },
+    {
+      "id": "workspace-requirement",
+      "question": "Is a Duckietown Workspace required to complete the local Docker exercises?",
+      "choices": [
+        "Yes",
+        "No"
+      ],
+      "correct_choice": "No",
+      "model_answer": "No. A Duckietown Workspace is optional; the local Docker exercises can use a supplied or safely configured terminal environment.",
+      "evidence": [
+        {
+          "label": "Relate terminal environments to Docker",
+          "anchor": "#relate-terminal-environments-to-docker"
+        }
+      ]
+    }
+  ]
+}

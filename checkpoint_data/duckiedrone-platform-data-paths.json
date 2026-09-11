@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "dtps-role",
+      "question": "What role does `dtps` play between a sensor driver and a supporting bridge container?",
+      "model_answer": "DTPS carries sensor data between services; a supporting bridge container makes that data available to other platform services.",
+      "evidence": [
+        {
+          "label": "Platform data paths",
+          "anchor": "#platform-data-paths"
+        }
+      ]
+    },
+    {
+      "id": "flight-controller-boundary",
+      "question": "Where does flight-control firmware run on a physical Duckiedrone, and how do platform containers interact with it?",
+      "model_answer": "Flight-control firmware runs on the physical flight controller, not in a container. Platform containers exchange state, telemetry, and authorized control-related traffic with it.",
+      "evidence": [
+        {
+          "label": "Platform data paths",
+          "anchor": "#platform-data-paths"
+        }
+      ]
+    },
+    {
+      "id": "platform-privileges",
+      "question": "Why do optional sensor drivers' elevated permissions not justify using the same settings in a local practice container?",
+      "model_answer": "Those permissions are reviewed exceptions for hardware-facing platform services. Local practice containers should still receive only the privileges they need.",
+      "evidence": [
+        {
+          "label": "Platform extensions",
+          "anchor": "#platform-extensions"
+        }
+      ]
+    }
+  ]
+}
