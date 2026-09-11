@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "image-and-container-layers",
+      "question": "What is the difference between an image and a container?",
+      "model_answer": "An image is a read-only package of ordered filesystem layers. A container is an instance made from it that has its own writable layer.",
+      "evidence": [
+        {
+          "label": "Images, layers, and containers",
+          "anchor": "#images-layers-and-containers"
+        }
+      ]
+    },
+    {
+      "id": "container-writable-layer",
+      "question": "Why can two containers made from one image contain different changed files?",
+      "model_answer": "Each container has a separate writable layer. A change belongs to that instance, not the base image or another container.",
+      "evidence": [
+        {
+          "label": "Images, layers, and containers",
+          "anchor": "#images-layers-and-containers"
+        }
+      ]
+    }
+  ]
+}

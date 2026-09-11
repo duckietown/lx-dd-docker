@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "context-purpose",
+      "question": "What does a Docker context control?",
+      "model_answer": "It supplies the connection settings that tell the Docker client which daemon receives a command.",
+      "evidence": [
+        {
+          "label": "Inspect the current base-station target",
+          "anchor": "#inspect-the-current-base-station-target"
+        }
+      ]
+    },
+    {
+      "id": "one-time-context",
+      "question": "Why is `docker --context NAME version` safer for a one-time check than `docker context use NAME`?",
+      "model_answer": "The flag affects only that command. `docker context use` changes the default daemon for later commands too.",
+      "evidence": [
+        {
+          "label": "Make the base-station target explicit",
+          "anchor": "#make-the-base-station-target-explicit"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+line-length = 79
+target-version = "py312"
+extend-exclude = ["notebooks"]
+
+[lint]
+select = ["ALL"]
+ignore = [
+	"COM812",
+	"CPY001",
+	"D",
+	"E501",
+	"W505",
+]
+
+[lint.pycodestyle]
+max-doc-length = 72
+
+[lint.per-file-ignores]
+"packages/checkpoint_self_check.py" = [
+	"EM101",
+	"FBT001",
+	"INP001",
+	"PLR0913",
+	"PLR0917",
+	"PLR2004",
+	"S101",
+	"TRY003",
+]
+"packages/docker_exercises/server.py" = ["INP001", "S104", "T201"]
+"notebooks/*.ipynb" = ["E402"]
+"tests/**/*.py" = ["INP001", "PLR2004", "PT018", "S101"]
