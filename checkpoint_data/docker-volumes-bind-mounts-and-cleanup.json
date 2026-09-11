@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "named-volume-persistence",
+      "question": "Why can `note.txt` still be read after the first volume-writing container exits?",
+      "model_answer": "A named volume outlives a container. Another container can mount the same volume and read files stored there.",
+      "evidence": [
+        {
+          "label": "Persist one file in a named volume",
+          "anchor": "#persist-one-file-in-a-named-volume"
+        }
+      ]
+    },
+    {
+      "id": "bind-mount-and-volume",
+      "question": "How does a bind mount differ from a named volume?",
+      "model_answer": "A bind mount exposes a chosen base-station path. Docker manages a named volume separately from a chosen host filesystem path.",
+      "evidence": [
+        {
+          "label": "Inspect a read-only bind mount",
+          "anchor": "#inspect-a-read-only-bind-mount"
+        }
+      ]
+    },
+    {
+      "id": "read-only-bind-mount",
+      "question": "Why does this LX use a read-only bind mount?",
+      "model_answer": "It lets a container inspect host files without permission to modify them, limiting accidental or unnecessary host changes.",
+      "evidence": [
+        {
+          "label": "Inspect a read-only bind mount",
+          "anchor": "#inspect-a-read-only-bind-mount"
+        }
+      ]
+    }
+  ]
+}

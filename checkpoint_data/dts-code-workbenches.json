@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "dts-code-workflow",
+      "question": "What do `dts code build -R ROBOT_NAME` and `dts code workbench -R ROBOT_NAME` each do?",
+      "model_answer": "The build command prepares the project recipe and builds for the target. The workbench command prepares it, runs the project for the target, and starts the default launcher in a workbench container.",
+      "evidence": [
+        {
+          "label": "Use `dts code` for the later learning-experience workflow",
+          "anchor": "#use-dts-code-for-the-later-learning-experience-workflow"
+        }
+      ]
+    },
+    {
+      "id": "workbench-shell-prerequisite",
+      "question": "What must be running before `dts code workbench -R ROBOT_NAME --shell` can attach?",
+      "model_answer": "An existing workbench container must already be running. `--shell` attaches to it; it does not build or start a new workbench.",
+      "evidence": [
+        {
+          "label": "Use `dts code` for the later learning-experience workflow",
+          "anchor": "#use-dts-code-for-the-later-learning-experience-workflow"
+        }
+      ]
+    }
+  ]
+}

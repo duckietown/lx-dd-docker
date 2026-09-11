@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "dtps-role",
+      "question": "What role does `dtps` play between a sensor driver and a ROS 2 bridge?",
+      "model_answer": "DTPS carries sensor data between services; the camera and ToF bridge containers then republish that data into the ROS 2 graph.",
+      "evidence": [
+        {
+          "label": "Sensor, ROS 2, and flight-control paths",
+          "anchor": "#sensor-ros-2-and-flight-control-paths"
+        }
+      ]
+    },
+    {
+      "id": "px4-and-mavros",
+      "question": "Where does PX4 run on a physical Duckiedrone, and what does `ros2-mavros` do?",
+      "model_answer": "PX4 runs on the flight controller. The `ros2-mavros` container exchanges telemetry and control-related traffic between PX4 and ROS 2.",
+      "evidence": [
+        {
+          "label": "Sensor, ROS 2, and flight-control paths",
+          "anchor": "#sensor-ros-2-and-flight-control-paths"
+        }
+      ]
+    },
+    {
+      "id": "platform-privileges",
+      "question": "Why do optional sensor drivers' elevated permissions not justify using the same settings in a local practice container?",
+      "model_answer": "Those permissions are reviewed exceptions for hardware-facing platform services. Local practice containers should still receive only the privileges they need.",
+      "evidence": [
+        {
+          "label": "Optional platform extensions",
+          "anchor": "#optional-platform-extensions"
+        }
+      ]
+    }
+  ]
+}

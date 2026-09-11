@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "virtual-connection-target",
+      "question": "What does `dts duckiebot virtual connect ROBOT_NAME` connect to?",
+      "model_answer": "It opens an interactive shell with `docker exec` in the local `dts-virtual-ROBOT_NAME` container, which represents the virtual Duckiedrone.",
+      "evidence": [
+        {
+          "label": "Connect to a virtual Duckiedrone",
+          "anchor": "#connect-to-a-virtual-duckiedrone"
+        }
+      ]
+    },
+    {
+      "id": "context-mistakes",
+      "question": "What can a wrong Docker context or an unauthorized `dts` deployment target cause?",
+      "model_answer": "It can send ordinary-looking commands to a physical Duckiedrone and unintentionally disrupt platform, sensor, or flight-support services.",
+      "evidence": [
+        {
+          "label": "Choose the right connection path",
+          "anchor": "#choose-the-right-connection-path"
+        }
+      ]
+    }
+  ]
+}
