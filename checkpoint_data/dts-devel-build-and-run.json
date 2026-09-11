@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "dts-devel-options",
+      "question": "What does `-H` select for `dts devel build` and `dts devel run`, and what does `-D` select for `dts devel build`?",
+      "model_answer": "`-H` selects the machine or Docker endpoint used for building or running. `-D` selects where a completed image is delivered after the build.",
+      "evidence": [
+        {
+          "label": "Choose the build and delivery machines",
+          "anchor": "#choose-the-build-and-delivery-machines"
+        }
+      ]
+    },
+    {
+      "id": "arm64-build-delivery",
+      "question": "Why might a local build delivered to an `arm64v8` Duckiedrone need `-a arm64v8`?",
+      "model_answer": "When build and delivery machines use different CPU architectures, the image must be built for the delivery machine's architecture.",
+      "evidence": [
+        {
+          "label": "Choose the build and delivery machines",
+          "anchor": "#choose-the-build-and-delivery-machines"
+        }
+      ]
+    },
+    {
+      "id": "remote-project-sync",
+      "question": "Why does remote `dts devel run -H DUCKIEDRONE_NAME` synchronize project code instead of using the base station's bind mount, where `DUCKIEDRONE_NAME` is the name of your Duckiedrone?",
+      "model_answer": "A base-station bind mount cannot cross to a remote Duckiedrone. Synchronization makes the project available on the remote machine.",
+      "evidence": [
+        {
+          "label": "Choose the run machine",
+          "anchor": "#choose-the-run-machine"
+        }
+      ]
+    }
+  ]
+}
