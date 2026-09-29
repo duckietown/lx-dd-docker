@@ -1,0 +1,26 @@
+{
+  "checkpoints": [
+    {
+      "id": "context-purpose",
+      "question": "What does a Docker context control?",
+      "model_answer": "It stores connection settings for a named Docker target. An explicit `--context` selects those settings for one command.",
+      "evidence": [
+        {
+          "label": "Inspect the current base-station target",
+          "anchor": "#inspect-the-current-base-station-target"
+        }
+      ]
+    },
+    {
+      "id": "one-time-context",
+      "question": "Why is `docker --context NAME version` safer for a one-time check than `docker context use NAME`?",
+      "model_answer": "The flag selects a named context only for that command. `docker context use` changes the saved context selection for later unqualified commands, though environment variables can still override it.",
+      "evidence": [
+        {
+          "label": "Make the base-station target explicit",
+          "anchor": "#make-the-base-station-target-explicit"
+        }
+      ]
+    }
+  ]
+}
