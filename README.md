@@ -40,11 +40,11 @@ Follow the Duckietown Manual's [LX General Instructions](https://docs.duckietown
 
 ## Notebooks
 
-Start with [Notebook 1](./notebooks/1-docker-engine-and-core-concepts.ipynb). The opening chapters establish the image, container, and host model so you can interpret the lifecycle, web-server, and persistence experiments that follow. The Duckiedrone chapters connect that model to its sensor and communication services. The connection and project chapters explain how to reach the right host and run your code on the Duckiedrone. The final development-environment chapter is an optional wrap-up for understanding changes between terminals.
+Start with [Notebook 1](./notebooks/1-introduction-to-docker.ipynb). The opening chapters establish the image, container, and host model so you can interpret the lifecycle, web-server, and persistence experiments that follow. The Duckiedrone chapters connect that model to its sensor and communication services. The connection and project chapters explain how to reach the right host and run your code on the Duckiedrone. The final development-environment chapter is an optional wrap-up for understanding changes between terminals.
 
 | # | Notebook | Description |
 | --- | --- | --- |
-| 1 | [Notebook 1](./notebooks/1-docker-engine-and-core-concepts.ipynb) | Understand how Docker's client, daemon, and objects provide a repeatable runtime |
+| 1 | [Notebook 1](./notebooks/1-introduction-to-docker.ipynb) | Understand how Docker's client, daemon, and objects provide a repeatable runtime |
 | 2 | [Notebook 2](./notebooks/2-docker-containers-images-and-safe-local-practice.ipynb) | Identify the practice host and distinguish image files from container changes |
 | 3 | [Notebook 3](./notebooks/3-docker-clients-registries-and-platforms.ipynb) | Identify where images come from and which processor architecture can run them |
 | 4 | [Notebook 4](./notebooks/4-docker-security-and-duckiedrone-boundaries.ipynb) | Understand how permissions, mounts, and ports affect host files and services |
@@ -78,7 +78,7 @@ Use `dts code editor` to read and edit this LX. Run `dts` and local Docker-pract
 
 ### Docker foundations and local practice
 
-[Notebook 1](./notebooks/1-docker-engine-and-core-concepts.ipynb) can be read before installing Docker. The local practice notebooks need the LX files and a terminal with access to Docker Engine or Docker Desktop; all their commands run on the base station. Interactive checkpoints require the notebook metadata supplied by `dts code editor` and a compatible Jupyter/IPython kernel with `ipywidgets` available. The metadata identifies the current notebook so the helper can load its matching questions.
+[Notebook 1](./notebooks/1-introduction-to-docker.ipynb) can be read before installing Docker. The local practice notebooks need the LX files and a terminal with access to Docker Engine or Docker Desktop; all their commands run on the base station. Interactive checkpoints require the notebook metadata supplied by `dts code editor` and a compatible Jupyter/IPython kernel with `ipywidgets` available. The metadata identifies the current notebook so the helper can load its matching questions.
 
 Begin by inspecting the connection settings and contacting the daemon:
 

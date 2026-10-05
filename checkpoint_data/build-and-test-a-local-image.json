@@ -6,8 +6,8 @@
       "model_answer": "It is the directory Docker receives for a build. `Dockerfile` instructions such as `COPY` can use files supplied from that directory.",
       "evidence": [
         {
-          "label": "Inspect the build context",
-          "anchor": "#inspect-the-build-context"
+          "label": "Understand the build context",
+          "anchor": "#understand-the-build-context"
         }
       ]
     },
@@ -17,8 +17,12 @@
       "model_answer": "`EXPOSE` documents an intended container port. The `--publish` option actually forwards host port `8088` to container port `8080` at runtime.",
       "evidence": [
         {
-          "label": "Publish a local web port",
-          "anchor": "#publish-a-local-web-port"
+          "label": "Read the Dockerfile as a sequence",
+          "anchor": "#read-the-dockerfile-as-a-sequence"
+        },
+        {
+          "label": "Start the web server",
+          "anchor": "#start-the-web-server"
         }
       ]
     },
@@ -28,8 +32,8 @@
       "model_answer": "It reaches the base-station side of the published port mapping because the client runs on the base station. Within the web container, the same loopback address reaches that container rather than the base station.",
       "evidence": [
         {
-          "label": "Publish a local web port",
-          "anchor": "#publish-a-local-web-port"
+          "label": "Follow the request through the mapping",
+          "anchor": "#follow-the-request-through-the-mapping"
         }
       ]
     },
@@ -39,8 +43,8 @@
       "model_answer": "The expected response shows that the server handled an HTTP request through the published host port. This checks the application's behavior and the port mapping together.",
       "evidence": [
         {
-          "label": "Request the application response",
-          "anchor": "#request-the-application-response"
+          "label": "Request and verify the response",
+          "anchor": "#request-and-verify-the-response"
         }
       ]
     }
