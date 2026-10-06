@@ -14,25 +14,27 @@ This learning experience (LX) uses small base-station experiments to make that m
 
 After completing this LX, learners will be able to:
 
-1. Explain Docker's client-daemon architecture and how images, layers, containers, virtual machines, registries, tags, and digests relate.
+1. Explain what Docker does and why is it useful, particularly for robotics applications.
 
-2. Identify the Docker client, Docker daemon, current context, and central processing unit (CPU) architecture used by a Docker host.
+2. Explain Docker's client-daemon architecture and how images, layers, containers, virtual machines, registries, tags, and digests relate.
 
-3. Distinguish a local terminal, development container, and Docker practice container, then verify the Docker daemon selected by each environment.
+3. Identify the Docker client, Docker daemon, current context, and central processing unit (CPU) architecture used by a Docker host.
 
-4. Apply least-privilege Docker defaults and distinguish the base station's Docker host from a Duckiedrone's Docker host.
+4. Distinguish a local terminal, development container, and Docker practice container, then verify the Docker daemon selected by each environment.
 
-5. Run, inspect, enter, stop, and remove clearly named temporary containers.
+5. Apply least-privilege Docker defaults and distinguish the base station's Docker host from a Duckiedrone's Docker host.
 
-6. Build a small image from a Dockerfile and verify its local Hypertext Transfer Protocol (HTTP) response.
+6. Run, inspect, enter, stop, and remove clearly named temporary containers.
 
-7. Distinguish container writable layers, named volumes, and read-only bind mounts.
+7. Build a small image from a Dockerfile and verify its local Hypertext Transfer Protocol (HTTP) response.
 
-8. Explain Duckiedrone stacks and the paths connecting sensors, Duckietown Postal Service (DTPS), Robot Operating System 2 (ROS 2), and flight control.
+8. Distinguish container writable layers, named volumes, and read-only bind mounts.
 
-9. Verify Docker and `dts` command targets, and distinguish Docker contexts, `dts` host arguments, Secure Shell (SSH) access to a physical Duckiedrone, and a local virtual Duckiedrone shell.
+9. Explain Duckiedrone stacks and the paths connecting sensors, Duckietown Postal Service (DTPS), Robot Operating System 2 (ROS 2), and flight control.
 
-10. Describe the build, delivery, run, and workbench workflows used by later Duckiedrone LXs.
+10. Verify Docker and `dts` command targets, and distinguish Docker contexts, `dts` host arguments, Secure Shell (SSH) access to a physical Duckiedrone, and a local virtual Duckiedrone shell.
+
+11. Describe the build, delivery, run, and workbench workflows used by later Duckiedrone LXs.
 
 ## Run this LX
 
