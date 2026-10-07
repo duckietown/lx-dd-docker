@@ -3,7 +3,7 @@
     {
       "id": "build-context",
       "question": "What is a Docker build context?",
-      "model_answer": "It is the directory Docker receives for a build. `Dockerfile` instructions such as `COPY` can use files supplied from that directory.",
+      "model_answer": "It is the collection of files made available to the builder. In this exercise, the context is `packages/docker_exercises`, with files excluded according to `.dockerignore`. `COPY` source paths are relative to that context's root.",
       "evidence": [
         {
           "label": "Understand the build context",

@@ -3,7 +3,7 @@
     {
       "id": "two-docker-hosts",
       "question": "What is the difference between the base station's Docker host and a physical Duckiedrone's Docker host?",
-      "model_answer": "The base-station daemon owns the `lx-docker-*` practice inventory. The physical Duckiedrone daemon owns its sensor, communication, and flight-support services. Each host has its own images and containers.",
+      "model_answer": "The base-station daemon manages local practice resources and other services deployed there, including virtual Duckiedrones. The physical Duckiedrone has a separate daemon for its onboard services. Each daemon has its own images and containers, so building an image on the base station does not automatically make it available on the Duckiedrone.",
       "evidence": [
         {
           "label": "Two Docker hosts",
@@ -25,7 +25,7 @@
     {
       "id": "terminal-and-target",
       "question": "Can a command entered on the base station change services on the physical Duckiedrone?",
-      "model_answer": "Yes. The client can send requests to a remote daemon, and Duckietown deployment commands name the robot they manage. The terminal location alone does not determine the Docker target.",
+      "model_answer": "Yes. The client can send requests to a remote daemon, and Duckietown deployment commands name the Duckiedrone they manage. The terminal location alone does not determine the Docker target.",
       "evidence": [
         {
           "label": "Summarizing the command locations",

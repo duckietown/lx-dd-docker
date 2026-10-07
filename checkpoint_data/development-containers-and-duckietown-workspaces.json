@@ -12,9 +12,20 @@
       ]
     },
     {
+      "id": "two-dts-installations",
+      "question": "Why can separate `dts` installations inside and outside the Workspace be useful?",
+      "model_answer": "The host installation makes Duckietown workflows available from a host terminal. The Workspace installation makes them available with its prepared development tools, files, and configuration. Both can be useful when you work in both environments, but two installations are not required if you only use one environment and do not by themselves create two Docker daemons.",
+      "evidence": [
+        {
+          "label": "Compare two terminals",
+          "anchor": "#compare-two-terminals"
+        }
+      ]
+    },
+    {
       "id": "inner-and-outer",
       "question": "Which daemon manages the Workspace container itself, and which manages its local practice containers?",
-      "model_answer": "The outer daemon manages the Workspace container. With the Workspace’s inner daemon selected, that inner daemon manages the practice containers.",
+      "model_answer": "The outer daemon manages the Workspace container. With the Workspace's inner daemon selected, that inner daemon manages the practice containers.",
       "evidence": [
         {
           "label": "Docker can run inside Docker",

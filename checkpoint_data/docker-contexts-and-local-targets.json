@@ -14,7 +14,7 @@
     {
       "id": "one-time-context",
       "question": "Why is `docker --context NAME version` safer for a one-time check than `docker context use NAME`?",
-      "model_answer": "The flag selects a named context only for that command. `docker context use` changes the saved context selection for later unqualified commands, though environment variables can still override it.",
+      "model_answer": "An explicit `--context NAME` selects that context for one command without changing the saved default. For a stored, non-default context, it takes precedence over `DOCKER_CONTEXT` and `DOCKER_HOST`. The built-in `default` context can still obtain its endpoint from `DOCKER_HOST`, so verify that endpoint before using it for local practice. `docker context use NAME` changes the saved default for later commands, which environment variables can override.",
       "evidence": [
         {
           "label": "Make the base-station target explicit",
@@ -47,7 +47,7 @@
     {
       "id": "context-authorization",
       "question": "Where does the Docker client run when using an SSH shell on the Duckiedrone or an explicit base-station context, and when is each useful?",
-      "model_answer": "In the SSH shell, the client runs on the Duckiedrone alongside its other tools. With an explicit context, it runs on the base station, which is useful for a targeted status check or script. Both query the same Duckiedrone daemon.",
+      "model_answer": "In the SSH shell, the client runs on the Duckiedrone alongside its other tools. With an explicit context, it runs on the base station, which is useful for a targeted status check or script. Both query the same daemon when the remote shell selects the Duckiedrone's local daemon and the context points to that Duckiedrone.",
       "evidence": [
         {
           "label": "Run the same command two ways",

@@ -15,14 +15,23 @@ This learning experience (LX) introduces Docker through small experiments on you
 After completing this LX, learners will be able to:
 
 1. Explain what Docker does and why reproducible software environments are useful in robotics.
+
 2. Distinguish images, layers, containers, virtual machines, clients, daemons, and registries, and interpret image tags, digests, and platforms.
+
 3. Identify the daemon receiving a Docker command and distinguish practice resources from physical or virtual Duckiedrone services.
+
 4. Explain how daemon access, mounts, container permissions, and published ports affect isolation.
+
 5. Run, inspect, enter, stop, restart, and remove containers, using logs and process information to understand their state.
+
 6. Build an image from a Dockerfile, inspect its configuration, and verify the application's response through a published port.
+
 7. Compare container writable layers, named volumes, and bind mounts, and clean up exercise resources by name.
+
 8. Demonstrate communication between containers and interpret the network, socket, and mount settings in a Duckiedrone Compose configuration.
+
 9. Use Docker contexts to inspect local and remote daemons, and distinguish context selection from Duckietown Shell target options.
+
 10. Explain how the Duckietown Shell and Workspace use Docker to support project builds, workbenches, virtual robots, and development environments.
 
 ## Run this LX
@@ -31,7 +40,7 @@ Follow the [LX General Instructions](https://docs.duckietown.com/ente/opmanual-d
 
 ## Notebooks
 
-Notebooks 1–4 establish the concepts and practice environment. Notebooks 5–7 follow containers, images, and data through their lifecycles. Notebooks 8–10 connect those ideas to cooperating services and multiple Docker hosts. Notebooks 11–12 explain how Duckietown packages these operations into development workflows.
+[Notebook 1](./notebooks/1-introduction-to-docker.ipynb), [Notebook 2](./notebooks/2-docker-containers-images-and-safe-local-practice.ipynb), [Notebook 3](./notebooks/3-docker-clients-registries-and-platforms.ipynb), and [Notebook 4](./notebooks/4-docker-security-and-duckiedrone-boundaries.ipynb) establish the concepts and practice environment. [Notebook 5](./notebooks/5-run-and-inspect-containers.ipynb), [Notebook 6](./notebooks/6-build-and-test-a-local-image.ipynb), and [Notebook 7](./notebooks/7-docker-volumes-bind-mounts-and-cleanup.ipynb) follow containers, images, and data through their lifecycles. [Notebook 8](./notebooks/8-duckiedrone-docker-hosts-and-stacks.ipynb), [Notebook 9](./notebooks/9-duckiedrone-container-communication.ipynb), and [Notebook 10](./notebooks/10-docker-contexts-and-local-targets.ipynb) connect those ideas to cooperating services and multiple Docker hosts. [Notebook 11](./notebooks/11-other-docker-uses-in-duckietown.ipynb) and [Notebook 12](./notebooks/12-development-containers-and-duckietown-workspaces.ipynb) explain how Duckietown packages these operations into development workflows.
 
 | # | Notebook | What you will learn or do |
 | --- | --- | --- |
@@ -66,10 +75,13 @@ The build and bind-mount exercises use files under `packages/docker_exercises/`.
 
 A physical Duckiedrone is not required for the local container, image, storage, and network experiments. Additional activities have their own prerequisites:
 
-- **Notebook 9:** inspecting live platform configuration requires an existing physical or virtual deployment; the source-reading and local network activities can be completed without one.
-- **Notebook 10:** the remote comparison requires a physical Duckiedrone, configured SSH authentication, and a remote account with Docker access.
-- **Notebook 11:** build and workbench examples require a suitable Duckietown project and its setup instructions; the virtual connection example requires an existing running virtual Duckiedrone. The command-help and source-reading activities explain the wrappers without deploying a project.
-- **Notebook 12:** comparing terminals requires a running Workspace, but its configuration can also be studied without setting one up.
+- __[Notebook 9](./notebooks/9-duckiedrone-container-communication.ipynb):__ inspecting live platform configuration requires an existing physical or virtual deployment; the source-reading and local network activities can be completed without one.
+
+- __[Notebook 10](./notebooks/10-docker-contexts-and-local-targets.ipynb):__ the remote comparison requires a physical Duckiedrone, configured SSH authentication, and a remote account with Docker access.
+
+- __[Notebook 11](./notebooks/11-other-docker-uses-in-duckietown.ipynb):__ build and workbench examples require a suitable Duckietown project and its setup instructions; the virtual connection example requires an existing running virtual Duckiedrone. The command-help and source-reading activities explain the wrappers without deploying a project.
+
+- __[Notebook 12](./notebooks/12-development-containers-and-duckietown-workspaces.ipynb):__ comparing terminals requires a running Workspace, but its configuration can also be studied without setting one up.
 
 Use resources you own or have permission to manage. Keep `lx-docker-*` practice resources separate from platform services and remove only the resources identified by each exercise.
 
@@ -83,7 +95,7 @@ Each notebook links to references for its topic. For a broader overview, see the
 
 ## For LX authors
 
-Learner material is in `notebooks/`, the practice web-server build context is in `packages/docker_exercises/`, and checkpoint support is in `packages/checkpoint_self_check.py` and `checkpoint_data/`. The paired [LX recipe repository](https://github.com/duckietown/lx-dd-docker-recipe) supplies the LX environment recipe; it is separate from the image learners build in Notebook 6.
+Learner material is in `notebooks/`, the practice web-server build context is in `packages/docker_exercises/`, and checkpoint support is in `packages/checkpoint_self_check.py` and `checkpoint_data/`. The paired [LX recipe repository](https://github.com/duckietown/lx-dd-docker-recipe) supplies the LX environment recipe; it is separate from the image learners build in [Notebook 6](./notebooks/6-build-and-test-a-local-image.ipynb).
 
 Install the test dependencies in your Python environment, then check notebook links and checkpoint mappings and run the checks from the LX root:
 
