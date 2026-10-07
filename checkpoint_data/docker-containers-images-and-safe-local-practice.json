@@ -1,24 +1,35 @@
 {
   "checkpoints": [
     {
-      "id": "image-and-container-layers",
-      "question": "What is the difference between an image and a container?",
-      "model_answer": "An image is a read-only package of ordered filesystem layers. A container is an instance made from it that has its own writable layer.",
+      "id": "target-settings",
+      "question": "Why check the Docker endpoint and environment overrides before creating a practice container?",
+      "model_answer": "A base-station client can target a local or remote daemon. The endpoint and overrides identify where the operation will happen.",
       "evidence": [
         {
-          "label": "Images, layers, and containers",
-          "anchor": "#images-layers-and-containers"
+          "label": "Identify the Docker target",
+          "anchor": "#identify-the-docker-target"
         }
       ]
     },
     {
-      "id": "container-writable-layer",
-      "question": "Why can two containers made from one image contain different changed files?",
-      "model_answer": "Each container has a separate writable layer that stores its own file changes.",
+      "id": "client-and-server",
+      "question": "If `docker --version` succeeds but `docker version` reports a connection error, what have you confirmed?",
+      "model_answer": "The Docker client is available. You have not confirmed that it can communicate with the selected daemon.",
       "evidence": [
         {
-          "label": "Images, layers, and containers",
-          "anchor": "#images-layers-and-containers"
+          "label": "Verify that the daemon responds",
+          "anchor": "#verify-that-the-daemon-responds"
+        }
+      ]
+    },
+    {
+      "id": "practice-ownership",
+      "question": "Does a name beginning with `lx-docker-` prove that a container is yours to remove?",
+      "model_answer": "No. The prefix is a naming convention. Confirm that you created the resource for this LX before removing it.",
+      "evidence": [
+        {
+          "label": "Keep practice resources identifiable",
+          "anchor": "#keep-practice-resources-identifiable"
         }
       ]
     }

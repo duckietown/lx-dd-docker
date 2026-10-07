@@ -6,8 +6,8 @@
       "model_answer": "Give a container only the files, devices, network access, and permissions needed for its specific job.",
       "evidence": [
         {
-          "label": "Security boundaries and safe defaults",
-          "anchor": "#security-boundaries-and-safe-defaults"
+          "label": "Container isolation depends on configuration",
+          "anchor": "#container-isolation-depends-on-configuration"
         }
       ]
     },
@@ -17,19 +17,19 @@
       "model_answer": "The socket gives the container powerful control over the Docker daemon, including ways to reach host files and devices. It is administrative access, not ordinary practice access.",
       "evidence": [
         {
-          "label": "Security boundaries and safe defaults",
-          "anchor": "#security-boundaries-and-safe-defaults"
+          "label": "Understand why daemon access is powerful",
+          "anchor": "#understand-why-daemon-access-is-powerful"
         }
       ]
     },
     {
       "id": "secret-build-context",
       "question": "Why should secrets be excluded from both images and their build contexts?",
-      "model_answer": "A secret copied into an image or build context can become part of image history and be recovered by people with image access. Use an appropriate secret mechanism instead.",
+      "model_answer": "Files in the build context are available to the builder. A COPY instruction can include secrets in image layers, exposing them to people with image access. Use a dedicated context and .dockerignore to exclude unnecessary or sensitive files.",
       "evidence": [
         {
-          "label": "Security boundaries and safe defaults",
-          "anchor": "#security-boundaries-and-safe-defaults"
+          "label": "Keep secrets out of image builds",
+          "anchor": "#keep-secrets-out-of-image-builds"
         }
       ]
     }

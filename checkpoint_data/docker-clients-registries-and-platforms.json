@@ -25,7 +25,7 @@
     {
       "id": "explicit-tag",
       "question": "Why should a Docker command use an explicit image tag rather than `latest`?",
-      "model_answer": "An explicit tag identifies the intended version for repeatable work. The mutable `latest` label can be changed by an image publisher.",
+      "model_answer": "An explicit version or variant tag states which release you intend to use. The latest tag does not automatically identify the newest release. Any tag can change; a digest identifies exact image content.",
       "evidence": [
         {
           "label": "Docker client, daemon, and registry",

@@ -85,9 +85,10 @@ Each notebook links to references for its topic. For a broader overview, see the
 
 Learner material is in `notebooks/`, the practice web-server build context is in `packages/docker_exercises/`, and checkpoint support is in `packages/checkpoint_self_check.py` and `checkpoint_data/`. The paired [LX recipe repository](https://github.com/duckietown/lx-dd-docker-recipe) supplies the LX environment recipe; it is separate from the image learners build in Notebook 6.
 
-After editing, check notebook links and checkpoint mappings and run the checks from the LX root:
+Install the test dependencies in your Python environment, then check notebook links and checkpoint mappings and run the checks from the LX root:
 
 ```bash
+python3 -m pip install -r tests/requirements.txt
 python3 -m pytest tests/
 ```
 

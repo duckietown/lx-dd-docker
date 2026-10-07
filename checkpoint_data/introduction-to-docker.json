@@ -2,7 +2,7 @@
   "checkpoints": [
     {
       "id": "docker-daemon",
-      "question": "Which program receives and carries out a `docker` command?",
+      "question": "Which program carries out a client request to create or manage a container?",
       "model_answer": "The Docker daemon, `dockerd`, receives API requests from the `docker` command-line interface and creates or manages Docker objects.",
       "evidence": [
         {

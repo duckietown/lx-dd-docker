@@ -1,40 +1,57 @@
 {
   "checkpoints": [
     {
-      "id": "terminal-and-daemon",
-      "question": "What can differ between the terminal where you type `docker` and the Docker daemon that receives its request?",
-      "model_answer": "The terminal's filesystem and shell context can differ from the daemon location. A Docker client can communicate with a local, remote, or in-container daemon.",
+      "id": "terminal-tools",
+      "question": "Why might `dts` be available in the Workspace but absent from a terminal directly on your computer?",
+      "model_answer": "The Workspace provides its own tools and filesystem. A terminal outside it uses the host environment, where those tools may not be installed.",
       "evidence": [
         {
-          "label": "Separate the shell from the Docker daemon",
-          "anchor": "#separate-the-shell-from-the-docker-daemon"
+          "label": "A development environment inside a container",
+          "anchor": "#a-development-environment-inside-a-container"
         }
       ]
     },
     {
-      "id": "environment-verification",
-      "question": "Which read-only commands identify the current Docker target before a modifying command?",
-      "model_answer": "`docker context show` reports the selected context name, `DOCKER_HOST` and `DOCKER_CONTEXT` show target overrides, and `docker version` contacts the resulting daemon. `hostname`, `pwd`, and `command -v docker` identify the shell environment.",
+      "id": "inner-and-outer",
+      "question": "Which daemon manages the Workspace container itself, and which manages its local practice containers?",
+      "model_answer": "The outer daemon manages the Workspace container. With the Workspace’s inner daemon selected, that inner daemon manages the practice containers.",
       "evidence": [
         {
-          "label": "Verify the current environment",
-          "anchor": "#verify-the-current-environment"
+          "label": "Docker can run inside Docker",
+          "anchor": "#docker-can-run-inside-docker"
         }
       ]
     },
     {
-      "id": "workspace-requirement",
-      "question": "Is a Duckietown Workspace required to complete the local Docker exercises?",
-      "choices": [
-        "Yes",
-        "No"
-      ],
-      "correct_choice": "No",
-      "model_answer": "No. A Duckietown Workspace is optional; the local Docker exercises can use a supplied or safely configured terminal environment.",
+      "id": "daemon-identity",
+      "question": "What can comparing daemon IDs reveal when two terminals show different tools or files?",
+      "model_answer": "It helps determine whether the Docker clients reached the same daemon. The shell environment and Docker connection are separate concerns.",
       "evidence": [
         {
-          "label": "Relate terminal environments to Docker",
-          "anchor": "#relate-terminal-environments-to-docker"
+          "label": "Compare two terminals",
+          "anchor": "#compare-two-terminals"
+        }
+      ]
+    },
+    {
+      "id": "workspace-storage",
+      "question": "Does a persistent Workspace home volume automatically synchronize a repository with a clone outside the Workspace?",
+      "model_answer": "No. The volume can retain files across container recreation, but the repositories can still have different branches, commits, and uncommitted edits.",
+      "evidence": [
+        {
+          "label": "Where are Workspace files stored?",
+          "anchor": "#where-are-workspace-files-stored"
+        }
+      ]
+    },
+    {
+      "id": "remote-mount-source",
+      "question": "When the Workspace client targets a physical Duckiedrone, where must a bind-mount source exist?",
+      "model_answer": "On the Duckiedrone, because the daemon resolves the source path on its own host. Docker does not upload the Workspace directory merely because its path appears in a mount option.",
+      "evidence": [
+        {
+          "label": "Which filesystem supplies a bind mount?",
+          "anchor": "#which-filesystem-supplies-a-bind-mount"
         }
       ]
     }

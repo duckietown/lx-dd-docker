@@ -1,0 +1,48 @@
+{
+  "checkpoints": [
+    {
+      "id": "build-and-run",
+      "question": "What does `dts devel build` produce, and what does `dts devel run` start?",
+      "model_answer": "Build produces the project image. Run starts a container using that image and the project’s runtime settings. A successful build does not establish that the application is running.",
+      "evidence": [
+        {
+          "label": "Building and running projects with `dts devel`",
+          "anchor": "#building-and-running-projects-with-dts-devel"
+        }
+      ]
+    },
+    {
+      "id": "build-destination",
+      "question": "How do the build machine, destination, and run machine differ?",
+      "model_answer": "The build machine performs the build, the destination receives the resulting image, and the run machine starts the container. The image must support the intended processor architecture.",
+      "evidence": [
+        {
+          "label": "Explore the wrapper",
+          "anchor": "#explore-the-wrapper"
+        }
+      ]
+    },
+    {
+      "id": "workbench-shell",
+      "question": "Does opening a workbench shell create another workbench container?",
+      "model_answer": "No. The workbench must already be running. The shell command connects to that existing container.",
+      "evidence": [
+        {
+          "label": "Preparing LX environments with `dts code`",
+          "anchor": "#preparing-lx-environments-with-dts-code"
+        }
+      ]
+    },
+    {
+      "id": "virtual-connection",
+      "question": "What happens underneath `dts duckiebot virtual connect`, and which inventory does Docker show inside that environment?",
+      "model_answer": "It opens a shell with docker exec in the outer virtual-robot container. Docker commands inside query the virtual Duckiedrone’s internal daemon, whose inventory is separate from the base-station daemon’s inventory.",
+      "evidence": [
+        {
+          "label": "Entering a virtual Duckiedrone",
+          "anchor": "#entering-a-virtual-duckiedrone"
+        }
+      ]
+    }
+  ]
+}

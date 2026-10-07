@@ -1,0 +1,70 @@
+{
+  "checkpoints": [
+    {
+      "id": "bridge-communication",
+      "question": "What showed that the two practice containers could communicate without sharing files?",
+      "model_answer": "The client received the web response using the server container name on lx-docker-net. Neither container needed a shared directory or a published host port for that request.",
+      "evidence": [
+        {
+          "label": "Connect two containers through a Docker network",
+          "anchor": "#connect-two-containers-through-a-docker-network"
+        }
+      ]
+    },
+    {
+      "id": "client-loopback",
+      "question": "Why did the request to `127.0.0.1:8080` fail inside the client container?",
+      "model_answer": "That address referred to the client container itself, where no server was listening on port 8080. Containers on this bridge network have separate network namespaces.",
+      "evidence": [
+        {
+          "label": "Why does `localhost` give a different result?",
+          "anchor": "#why-does-localhost-give-a-different-result"
+        }
+      ]
+    },
+    {
+      "id": "expose-and-access",
+      "question": "Does `EXPOSE 8080` block connections to other ports?",
+      "model_answer": "No. EXPOSE documents an intended port. It does not enforce access rules or publish a host port. Containers on the same ordinary user-defined bridge can reach each other’s listening ports.",
+      "evidence": [
+        {
+          "label": "Listening, exposing, and publishing are different",
+          "anchor": "#listening-exposing-and-publishing-are-different"
+        }
+      ]
+    },
+    {
+      "id": "host-network",
+      "question": "Why can the DTPS service accept TCP connections without a Compose `ports:` mapping?",
+      "model_answer": "It uses host networking, so it listens directly in the Linux host’s network namespace. Reachability also depends on the listening address and host network controls.",
+      "evidence": [
+        {
+          "label": "Host networking changes the network boundary",
+          "anchor": "#host-networking-changes-the-network-boundary"
+        }
+      ]
+    },
+    {
+      "id": "socket-directory",
+      "question": "Does the shared DTPS socket directory contain ordinary files of saved messages?",
+      "model_answer": "The Unix socket is a communication endpoint identified by a path. Processes connect to it and exchange data through the kernel; it is not an ordinary file of saved messages.",
+      "evidence": [
+        {
+          "label": "A shared directory can contain a communication endpoint",
+          "anchor": "#a-shared-directory-can-contain-a-communication-endpoint"
+        }
+      ]
+    },
+    {
+      "id": "image-and-launcher",
+      "question": "How can the camera and bottom ToF services use the same image but start different programs?",
+      "model_answer": "The image contains the application packages and launchers. Compose supplies a different DT_LAUNCHER value for each service, which the image’s default command uses to select the program.",
+      "evidence": [
+        {
+          "label": "Follow the camera service from image to startup",
+          "anchor": "#follow-the-camera-service-from-image-to-startup"
+        }
+      ]
+    }
+  ]
+}
