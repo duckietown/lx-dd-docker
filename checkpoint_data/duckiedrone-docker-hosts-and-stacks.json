@@ -21,6 +21,17 @@
           "anchor": "#duckiedrone-stacks"
         }
       ]
+    },
+    {
+      "id": "terminal-and-target",
+      "question": "Can a command entered on the base station change services on the physical Duckiedrone?",
+      "model_answer": "Yes. The client can send requests to a remote daemon, and Duckietown deployment commands name the robot they manage. The terminal location alone does not determine the Docker target.",
+      "evidence": [
+        {
+          "label": "Summarizing the command locations",
+          "anchor": "#summarizing-the-command-locations"
+        }
+      ]
     }
   ]
 }

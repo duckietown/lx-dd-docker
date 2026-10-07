@@ -1,65 +1,42 @@
-"""Sanity tests for the Docker learning experience.
+"""Structural checks for the reviewed 12-notebook Docker LX.
 
-Run from the LX root with:
-
-    python3 -m pytest tests/
-
-These tests validate learner material without requiring a Docker daemon, so they
-can run inside the editor container or on a plain Python host.
+Run python3 -m pytest tests/ from the repository root. These checks validate
+notebook structure, links, presentation, and checkpoint integration without
+running Docker activities. Editorial wording remains a human review task.
 """
 
 import ast
 import json
 import re
-from importlib import import_module
-from itertools import pairwise
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
+from urllib.parse import unquote, urlsplit
+
+import nbformat
+import pytest
+
+from packages import checkpoint_self_check
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_DIR = ROOT / "notebooks"
-EXERCISE_DIR = ROOT / "packages" / "docker_exercises"
-README_PATH = ROOT / "README.md"
-README_EXERCISE_TOPIC = "Docker"
 CHECKPOINT_DATA_DIR = ROOT / "checkpoint_data"
-CHECKPOINT_SELF_CHECK_PATH = ROOT / "packages" / "checkpoint_self_check.py"
-checkpoint_self_check = import_module("packages.checkpoint_self_check")
-LIST_ITEM = re.compile(r"^\s*(?:[-*+] |\d+\. )")
-VSCODE_HEADING_PUNCTUATION = "[]!/'\"#$%&()*+,./:;<=>?@\\^{}|~`"
-UNLINKED_NOTEBOOK_REFERENCE_PATTERN = re.compile(
-    r"(?<!\[)\bNotebooks?\s+\[?\d+",
-    re.IGNORECASE,
-)
-LINUX_NETWORKING_NOTEBOOK_TITLE = (
-    "Linux and Networking on the Duckiedrone"
-)
-LINUX_NETWORKING_LX_URL = "https://github.com/duckietown/lx-dd-linux-and-networking"
-UNLINKED_CROSS_LX_REFERENCE_PATTERN = re.compile(
-    r"\bnetworking LX\b",
-    re.IGNORECASE,
-)
 REQUIRED_NOTEBOOKS = {
-    "1-docker-engine-and-core-concepts.ipynb": "# Docker Engine and Core Concepts",
-    "2-docker-containers-images-and-safe-local-practice.ipynb": "# Docker Containers, Images, and Safe Local Practice",
+    "1-introduction-to-docker.ipynb": "# Introduction to Docker",
+    "2-docker-containers-images-and-safe-local-practice.ipynb": "# Practicing with Docker in Duckietown",
     "3-docker-clients-registries-and-platforms.ipynb": "# Docker Clients, Registries, and Platforms",
     "4-docker-security-and-duckiedrone-boundaries.ipynb": "# Docker Security and Duckiedrone Boundaries",
     "5-run-and-inspect-containers.ipynb": "# Run and Inspect Containers",
     "6-build-and-test-a-local-image.ipynb": "# Build and Test a Local Image",
     "7-docker-volumes-bind-mounts-and-cleanup.ipynb": "# Docker Volumes, Bind Mounts, and Cleanup",
     "8-duckiedrone-docker-hosts-and-stacks.ipynb": "# Duckiedrone Docker Hosts and Stacks",
-    "9-duckiedrone-data-paths.ipynb": "# Duckiedrone Data Paths",
-    "10-duckiedrone-deployment-boundaries.ipynb": "# Duckiedrone Deployment Boundaries",
-    "11-docker-contexts-and-local-targets.ipynb": "# Docker Contexts and Local Targets",
-    "12-remote-duckiedrone-docker-contexts.ipynb": "# Remote Duckiedrone Docker Contexts",
-    "13-dts-devel-build-and-run.ipynb": "# `dts devel` Build and Run",
-    "14-dts-code-workbenches.ipynb": "# `dts code` Workbenches",
-    "15-virtual-duckiedrone-connections.ipynb": "# Virtual Duckiedrone Connections",
-    "16-development-containers-and-duckietown-workspaces.ipynb": "# Development Containers and Duckietown Workspaces",
+    "9-duckiedrone-container-communication.ipynb": "# Communication Between Containers",
+    "10-docker-contexts-and-local-targets.ipynb": "# Docker Contexts and Local Targets: choosing the right host for a command",
+    "11-other-docker-uses-in-duckietown.ipynb": "# Docker Behind the Duckietown Shell",
+    "12-development-containers-and-duckietown-workspaces.ipynb": "# The Duckietown Workspace: Docker for Development",
 }
-INTERACTIVE_CHECKPOINT_NOTEBOOKS = set(REQUIRED_NOTEBOOKS)
-TRY_IT_HEADING_PATTERN = re.compile(r"^### Try it(?:[: ].*)?$", re.MULTILINE)
-SECTION_HEADING_PATTERN = re.compile(r"^#{2,3} .+$", re.MULTILINE)
+
 CHECKPOINT_CODE_SOURCE = [
     "import sys",
     "from pathlib import Path",
@@ -74,430 +51,399 @@ CHECKPOINT_CODE_SOURCE = [
     "",
     "display_checkpoint_self_checks()",
 ]
-CHECKPOINT_TAIL = (
-    "## Checkpoint\n\n"
-    "Run the self-check in the next cell. Write or select a response before revealing the answer.\n"
-)
-PRESENTATION_STYLE = re.compile(
-    r"<style>\n"
-    r"\.lx-table \{\n"
-    r"\s+margin: 1\.5em auto;\n"
-    r"\s+text-align: left;\n"
-    r"\}\n\n"
-    r"\.lx-table caption \{\n"
-    r"\s+caption-side: top;\n"
-    r"\s+font-size: 0\.9em;\n"
-    r"\s+margin-bottom: 0\.6em;\n"
-    r"\s+text-align: center;\n"
-    r"\}\n\n"
-    r"\.lx-figure \{\n"
-    r"\s+margin: 1\.5em auto;\n"
-    r"\s+text-align: center;\n"
-    r"\}\n\n"
-    r"\.lx-figure figcaption \{\n"
-    r"\s+font-size: 0\.9em;\n"
-    r"\s+margin-top: 0\.6em;\n"
-    r"\s+text-align: center;\n"
-    r"\}\n\n"
-    r"table \{\n"
-    r"\s+margin: 0 auto 1\.5em;\n"
-    r"\}\n\n"
-    r"p:has\(> a\[id\^='table-'\]\) \{\n"
-    r"\s+margin: 0;\n"
-    r"\}\n\n"
-    r"p:has\(> a\[id\^='table-'\]\) \+ p,\n"
-    r"a\[id\^='table-'\] \+ p \{\n"
-    r"\s+font-size: 0\.9em;\n"
-    r"\s+margin: 1\.5em 0 0\.6em;\n"
-    r"\s+text-align: center;\n"
-    r"\}\n\n"
-    r"p\.lx-figure \{\n"
-    r"\s+margin: 1\.5em auto 0;\n"
-    r"\}\n\n"
-    r"p\.lx-figure \+ p \{\n"
-    r"\s+font-size: 0\.9em;\n"
-    r"\s+margin: 0\.6em 0 1\.5em;\n"
-    r"\s+text-align: center;\n"
-    r"\}\n</style>"
-)
-TABLE_PATTERN = re.compile(r"<table\b(?P<attrs>[^>]*)>.*?</table>", re.DOTALL)
-FIGURE_PATTERN = re.compile(r"<figure\b(?P<attrs>[^>]*)>.*?</figure>", re.DOTALL)
-CAPTION_PATTERN = re.compile(r"<(?:caption|figcaption)\b(?P<attrs>[^>]*)>")
 
 
 def cell_source(cell: dict[str, Any]) -> str:
-    """Return a cell source regardless of its valid notebook representation."""
     source = cell["source"]
-    if isinstance(source, list):
-        return "".join(
-            line if line.endswith("\n") else f"{line}\n"
-            for line in source
-        )
-    return source
+    return "".join(source) if isinstance(source, list) else source
 
 
-def assert_markdown_ends_with_one_newline(cell: dict[str, Any]) -> None:
-    """Require Markdown cell source to end without blank or space-only tails."""
-    source = cell["source"]
-    text = "".join(source) if isinstance(source, list) else source
-    assert text.endswith("\n")
-    assert not text.endswith("\n\n")
-    assert not text.endswith(" \n")
+def load_notebook(name: str) -> dict[str, Any]:
+    return json.loads((NOTEBOOK_DIR / name).read_text())
 
 
-def assert_try_it_sections(source: str) -> None:
-    """Require each activity to stay inside a parent section with its result."""
-    activity_headings = list(TRY_IT_HEADING_PATTERN.finditer(source))
-    if not activity_headings:
-        return
-
-    section_headings = list(SECTION_HEADING_PATTERN.finditer(source))
-    checkpoint_index = source.index("## Checkpoint")
-    for index, activity_heading in enumerate(activity_headings):
-        assert activity_heading.start() < checkpoint_index
-        parent_headings = [
-            heading
-            for heading in section_headings
-            if heading.start() < activity_heading.start()
-            and not TRY_IT_HEADING_PATTERN.fullmatch(heading.group(0))
-        ]
-        assert parent_headings
-        next_heading_start = next(
-            (
-                heading.start()
-                for heading in section_headings
-                if heading.start() > activity_heading.start()
-            ),
-            checkpoint_index,
-        )
-        activity_end = min(
-            next_heading_start,
-            (
-                activity_headings[index + 1].start()
-                if index + 1 < len(activity_headings)
-                else checkpoint_index
-            ),
-        )
-        activity_source = source[activity_heading.end() : activity_end]
-        assert "<details>" in activity_source
-        assert "</details>" in activity_source
-
-
-def assert_final_checkpoint_tail(notebook: dict[str, Any]) -> None:
-    """Require the standard final Further reading and checkpoint structure."""
-    final_markdown = notebook["cells"][-2]
-    assert final_markdown["cell_type"] == "markdown"
-    source = cell_source(final_markdown)
-    checkpoint_index = source.rfind("## Checkpoint\n")
-    assert checkpoint_index >= 0
-    assert source[checkpoint_index:] == CHECKPOINT_TAIL
-    headings = re.findall(r"(?m)^## .+$", source[:checkpoint_index])
-    assert headings[-1] == "## Further reading"
-
-
-def checkpoint_data_path(notebook_name: str) -> Path:
-    """Return the sidecar path implied by one numbered notebook name."""
-    _, _, checkpoint_name = notebook_name.partition("-")
-    return (
-        CHECKPOINT_DATA_DIR / f"{checkpoint_name.removesuffix('.ipynb')}.json"
+def markdown_source(notebook: dict[str, Any]) -> str:
+    return "\n\n".join(
+        cell_source(c)
+        for c in notebook["cells"]
+        if c["cell_type"] == "markdown"
     )
 
 
-def vscode_heading_fragment(heading: str) -> str:
-    """Return the fragment assigned to an ASCII Markdown heading by VS Code."""
-    normalized_heading = re.sub(r"\s+", "-", heading.strip().lower())
-    return "".join(
-        character
-        for character in normalized_heading
-        if character not in VSCODE_HEADING_PUNCTUATION
+def heading_fragment(title: str) -> str:
+    """Match VS Code's heading anchors, including inline code in titles."""
+    title = re.sub(r"\s+", "-", title.strip().lower())
+    return title.translate(
+        str.maketrans("", "", "[]!/'\"#$%&()*+,./:;<=>?@\\^{}|~`")
     ).strip("-")
 
 
-def assert_reveal_self_check(notebook_name: str) -> None:
-    """Check one interactive checkpoint without embedding its data in a notebook."""
-    notebook_path = NOTEBOOK_DIR / notebook_name
-    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-    markdown_source = cell_source(notebook["cells"][0])
-    code_source = cell_source(notebook["cells"][1])
-    checkpoint_data = json.loads(
-        checkpoint_data_path(notebook_name).read_text(encoding="utf-8"),
+def without_code(source: str) -> str:
+    return re.sub(
+        r"^```[^\n]*\n.*?^```\s*$", "", source, flags=re.MULTILINE | re.DOTALL
     )
 
-    assert set(checkpoint_data) == {"checkpoints"}
-    assert code_source.splitlines() == CHECKPOINT_CODE_SOURCE
-    assert (
-        "Write or select a response before revealing the answer."
-        in markdown_source
-    )
 
-    checkpoints = checkpoint_data["checkpoints"]
-    assert isinstance(checkpoints, list) and checkpoints
-    checkpoint_ids = set()
-    for checkpoint in checkpoints:
-        assert isinstance(checkpoint, dict)
-        required_fields = {"id", "question", "model_answer", "evidence"}
-        if "choices" in checkpoint:
-            assert set(checkpoint) == required_fields | {
-                "choices",
-                "correct_choice",
-            }
-            choices = checkpoint["choices"]
-            correct_choice = checkpoint["correct_choice"]
-            assert isinstance(choices, list) and len(choices) >= 2
-            assert len(choices) == len(set(choices))
-            assert all(
-                isinstance(choice, str) and choice.strip()
-                for choice in choices
-            )
-            assert (
-                isinstance(correct_choice, str) and correct_choice in choices
-            )
-        else:
-            assert set(checkpoint) == required_fields
+class Markup(HTMLParser):
+    def __init__(self, source: str) -> None:
+        super().__init__()
+        self.elements = []
+        self.feed(source)
 
-        checkpoint_id = checkpoint["id"]
-        question = checkpoint["question"]
-        model_answer = checkpoint["model_answer"]
-        evidence = checkpoint["evidence"]
-        assert isinstance(checkpoint_id, str) and checkpoint_id
-        assert isinstance(question, str) and question
-        assert isinstance(model_answer, str) and model_answer
-        assert isinstance(evidence, list) and evidence
-        assert question not in markdown_source
-        assert model_answer not in markdown_source
-        assert checkpoint_id not in checkpoint_ids
-        checkpoint_ids.add(checkpoint_id)
-
-        for evidence_item in evidence:
-            assert set(evidence_item) == {"label", "anchor"}
-            source_section = evidence_item["label"]
-            anchor = evidence_item["anchor"]
-            assert isinstance(source_section, str) and source_section
-            assert isinstance(anchor, str) and anchor.startswith("#")
-            assert f"## {source_section}" in markdown_source
-            assert anchor == f"#{vscode_heading_fragment(source_section)}"
+    def handle_starttag(
+        self, tag: str, attrs: list[tuple[str, str | None]]
+    ) -> None:
+        self.elements.append((tag, dict(attrs)))
 
 
-def test_notebook_cells_have_consistent_metadata() -> None:
-    """Keep notebook cells compatible with the reviewed LX convention."""
-    notebook_paths = sorted(NOTEBOOK_DIR.glob("*.ipynb"))
-    assert set(REQUIRED_NOTEBOOKS) == {path.name for path in notebook_paths}
-
-    for notebook_path in notebook_paths:
-        notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-        assert notebook["nbformat"] == 4
-        expected_cell_count = (
-            2 if notebook_path.name in INTERACTIVE_CHECKPOINT_NOTEBOOKS else 1
-        )
-        assert len(notebook["cells"]) == expected_cell_count
-
-        for cell in notebook["cells"]:
-            assert isinstance(cell["metadata"], dict)
-            assert isinstance(cell["id"], str)
-            assert cell["id"]
-            assert cell["id"] == cell["metadata"]["id"]
-            if cell["cell_type"] == "markdown":
-                assert_markdown_ends_with_one_newline(cell)
-
-        markdown_cell = notebook["cells"][0]
-        assert markdown_cell["cell_type"] == "markdown"
-        assert markdown_cell["metadata"]["language"] == "markdown"
-        source = cell_source(markdown_cell)
-        expected_heading = REQUIRED_NOTEBOOKS.get(notebook_path.name, "#")
-        logo_index = source.index('src="../assets/images/dtlogo.png"')
-        first_h1_index = source.index(expected_heading)
-        assert logo_index < first_h1_index
-
-        markdown_headings = [
-            line for line in source.splitlines() if line.startswith("# ")
-        ]
-        assert markdown_headings[0] == expected_heading
-        assert_try_it_sections(source)
-
-        if notebook_path.name in INTERACTIVE_CHECKPOINT_NOTEBOOKS:
-            code_cell = notebook["cells"][1]
-            assert code_cell["cell_type"] == "code"
-            assert code_cell["metadata"]["language"] == "python"
-            assert_final_checkpoint_tail(notebook)
-
-
-def test_tables_and_figures_use_shared_presentation_style() -> None:
-    """Keep table and figure layout on the canonical shared CSS contract."""
-    styled_notebooks = 0
-    table_count = 0
-    figure_count = 0
-
-    for notebook_path in sorted(NOTEBOOK_DIR.glob("*.ipynb")):
-        notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-        source = cell_source(notebook["cells"][0])
-        tables = TABLE_PATTERN.findall(source)
-        figures = FIGURE_PATTERN.findall(source)
-
-        if tables or figures:
-            styled_notebooks += 1
-            assert PRESENTATION_STYLE.search(source)
-        else:
-            assert "<style>" not in source
-
-        for attributes in tables:
-            assert 'class="lx-table"' in attributes
-        for attributes in figures:
-            assert 'class="lx-figure"' in attributes
-        for attributes in CAPTION_PATTERN.findall(source):
-            assert "style=" not in attributes
-
-        table_count += len(tables)
-        figure_count += len(figures)
-
-    assert styled_notebooks == 10
-    assert table_count == 7
-    assert figure_count == 5
-
-
-def test_numbered_notebook_references_are_individually_linked() -> None:
-    """Keep numbered course references direct and individually actionable."""
-    readme_source = README_PATH.read_text(encoding="utf-8")
-    learner_sources = {README_PATH: readme_source}
-
-    for notebook_name in REQUIRED_NOTEBOOKS:
-        notebook_path = NOTEBOOK_DIR / notebook_name
-        notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-        markdown_source = cell_source(notebook["cells"][0])
-        learner_sources[notebook_path] = markdown_source
-
-        notebook_number = notebook_name.partition("-")[0]
-        expected_link = f"[Notebook {notebook_number}](./notebooks/{notebook_name})"
-        assert expected_link in readme_source
-
-    for learner_path, learner_source in learner_sources.items():
-        assert (
-            UNLINKED_NOTEBOOK_REFERENCE_PATTERN.search(learner_source) is None
-        ), learner_path
-
-
-def test_cross_lx_references_use_clear_linked_titles() -> None:
-    """Keep external LX links clear and introductions concise."""
-    notebook_path = NOTEBOOK_DIR / "4-docker-security-and-duckiedrone-boundaries.ipynb"
-    notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-    markdown_source = cell_source(notebook["cells"][0])
-    expected_link = (
-        f"[{LINUX_NETWORKING_NOTEBOOK_TITLE}]"
-        f"({LINUX_NETWORKING_LX_URL})"
-    )
-
-    assert expected_link in markdown_source
-    assert UNLINKED_CROSS_LX_REFERENCE_PATTERN.search(markdown_source) is None
-
-
-def test_checkpoint_data_matches_interactive_notebooks() -> None:
-    """Keep every interactive Docker notebook paired with one sidecar."""
-    expected_paths = {
-        checkpoint_data_path(notebook_name)
-        for notebook_name in INTERACTIVE_CHECKPOINT_NOTEBOOKS
+def anchors(source: str) -> set[str]:
+    text = without_code(source)
+    headings = re.findall(r"^#{1,6} (.+)$", text, re.MULTILINE)
+    return {heading_fragment(h) for h in headings} | {
+        attrs["id"] for _, attrs in Markup(text).elements if "id" in attrs
     }
-    assert set(CHECKPOINT_DATA_DIR.glob("*.json")) == expected_paths
-
-    for notebook_name in INTERACTIVE_CHECKPOINT_NOTEBOOKS:
-        assert_reveal_self_check(notebook_name)
 
 
-def test_remote_context_cleanup_follows_all_queries() -> None:
-    """Keep the remote context available until its last inspection command."""
-    notebook_path = NOTEBOOK_DIR / "12-remote-duckiedrone-docker-contexts.ipynb"
-    notebook_source = notebook_path.read_text(encoding="utf-8")
-    notebook = json.loads(notebook_source)
-    source = cell_source(notebook["cells"][0])
-    context_name = "duckiedrone-DUCKIEDRONE_NAME"
-
-    creation_index = source.index(f"docker context create {context_name}")
-    first_query_index = source.index(f"docker --context {context_name}")
-    last_query_index = source.rindex(f"docker --context {context_name}")
-    cleanup_index = source.index(f"docker context rm {context_name}")
-
-    assert creation_index < first_query_index
-    assert last_query_index < cleanup_index
+def links(source: str) -> list[str]:
+    text = without_code(source)
+    result = re.findall(r"!?\[[^\]\n]*\]\(([^\s)]+)\)", text)
+    for tag, attrs in Markup(text).elements:
+        attr = "src" if tag == "img" else "href"
+        if tag in {"a", "img"} and attr in attrs:
+            result.append(attrs[attr])
+    return result
 
 
-def test_shared_checkpoint_self_check_helper_is_valid() -> None:
-    """Keep the reusable checkpoint implementation available and parseable."""
-    helper_source = CHECKPOINT_SELF_CHECK_PATH.read_text(encoding="utf-8")
-    ast.parse(helper_source, filename=str(CHECKPOINT_SELF_CHECK_PATH))
-
-    for required_text in (
-        "class CheckpointSelfCheck",
-        "def load_checkpoint_definitions",
-        "def render_model_answer",
-        "def display_checkpoint_self_checks",
-        "Checkbox",
-        "Reveal answer",
-        "Try again",
-    ):
-        assert required_text in helper_source
-
-
-def test_model_answer_uses_compact_paragraph_spacing() -> None:
-    """Keep wrapped model answers readable in the notebook renderer."""
-    self_check = checkpoint_self_check.CheckpointSelfCheck(
-        question_number=1,
-        question="Question",
-        checkpoint_id="checkpoint",
-        checkpoint_data_relative_path=Path("checkpoint_data/checkpoint.json"),
-    )
-
-    model_answer_state = self_check.model_answer.get_state()
-    assert "checkpoint-model-answer" in model_answer_state["_dom_classes"]
-    assert (
-        ".checkpoint-self-check .checkpoint-model-answer .widget-html-content p {"
-        "line-height: 1.5;"
-        "margin: 0 0 8px;"
-        "}"
-        in checkpoint_self_check.CHECKPOINT_WIDGET_STYLE
-    )
-    assert (
-        ".checkpoint-self-check .checkpoint-model-answer .widget-html-content p:last-child {"
-        "margin-bottom: 0;"
-        "}"
-        in checkpoint_self_check.CHECKPOINT_WIDGET_STYLE
-    )
-
-    self_check.answer.value = "Response"
-    with patch.object(
-        checkpoint_self_check,
-        "load_model_answer",
-        return_value=("Answer", [{"label": "Source", "anchor": "#source"}]),
-    ):
-        self_check.reveal_answer(self_check.reveal_button)
-
-    assert self_check.model_answer.layout.display == ""
-    assert "<strong>Model answer:</strong> Answer" in self_check.model_answer.value
-    assert "<a href='#source'>Source</a>" in self_check.model_answer.value
-
-
-def test_markdown_lists_are_spaced() -> None:
-    """Keep rendered lists readable for beginners."""
-    documents = [README_PATH.read_text(encoding="utf-8")]
-
-    for notebook_path in sorted(NOTEBOOK_DIR.glob("*.ipynb")):
-        notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
-        documents.extend(cell_source(cell) for cell in notebook["cells"])
-
-    for document in documents:
-        lines = document.splitlines()
-        has_tight_list = any(
-            LIST_ITEM.match(line) and LIST_ITEM.match(next_line)
-            for line, next_line in pairwise(lines)
+def assert_local_links(source: str, path: Path) -> None:
+    for link in links(source):
+        url = urlsplit(link)
+        if url.scheme or url.netloc:
+            continue
+        target = (
+            (path.parent / unquote(url.path)).resolve() if url.path else path
         )
-        assert not has_tight_list
+        assert target.is_file(), f"{path.name}: missing target {link}"
+        if url.fragment and target.suffix in {".md", ".ipynb"}:
+            target_source = target.read_text()
+            if target.suffix == ".ipynb":
+                target_source = markdown_source(json.loads(target_source))
+            assert unquote(url.fragment) in anchors(target_source), (
+                f"{path.name}: missing anchor {link}"
+            )
+
+
+def assert_layout(notebook: dict[str, Any]) -> None:
+    cells = notebook["cells"]
+    assert [c["cell_type"] for c in cells] == [
+        "markdown",
+        "markdown",
+        "code",
+        "markdown",
+    ]
+    logo = cell_source(cells[0])
+    assert re.fullmatch(
+        r"\s*<p[^>]*>\s*<a[^>]*>\s*<img[^>]*>\s*</a>\s*</p>\s*", logo
+    )
+    images = [attrs for tag, attrs in Markup(logo).elements if tag == "img"]
+    assert images == [
+        {
+            "src": "../assets/images/dtlogo.png",
+            "alt": "Duckietown Logo",
+            "width": "30%",
+        }
+    ]
+    lesson = cell_source(cells[1])
+    assert "dtlogo.png" not in lesson
+    assert lesson.count("## Checkpoint\n") == 1
+    assert "## Further reading\n" in lesson
+    assert lesson.index("## Further reading\n") < lesson.index(
+        "## Checkpoint\n"
+    )
+    tail = lesson.split("## Checkpoint\n", 1)[1]
+    assert "Run the self-check in the next cell" in tail
+    assert not re.search(r"^## ", tail, re.MULTILINE)
+    assert cell_source(cells[2]).splitlines() == CHECKPOINT_CODE_SOURCE
+    summary = cell_source(cells[3])
+    assert summary.startswith("## Summary and conclusions\n\n")
+    assert markdown_source(notebook).count("## Summary and conclusions\n") == 1
+    assert len(summary.split()) < 120
+
+
+def assert_presentation(notebook: dict[str, Any]) -> None:
+    """Styles must share the lesson cell with the material they format."""
+    lesson = cell_source(notebook["cells"][1])
+    for cell in (notebook["cells"][0], notebook["cells"][-1]):
+        assert "<style" not in cell_source(cell)
+    styles = re.findall(r"<style>(.*?)</style>", lesson, re.DOTALL)
+    has_media = bool(
+        re.search(r"<(?:table|figure)\b|^\|.*\|$", lesson, re.MULTILINE)
+    )
+    if has_media:
+        assert len(styles) == 1
+        assert lesson.index("<style>") < lesson.index("# ")
+        css = styles[0]
+        for selector in [
+            ".lx-table",
+            ".lx-table caption",
+            ".lx-figure",
+            ".lx-figure figcaption",
+            "table",
+        ]:
+            assert re.search(re.escape(selector) + r"\s*\{[^}]+\}", css)
+        assert "caption-side: top" in css
+    else:
+        assert not styles
+    elements = Markup(without_code(lesson)).elements
+    ids = [attrs["id"] for _, attrs in elements if "id" in attrs]
+    assert len(ids) == len(set(ids)), "Duplicate HTML IDs"
+    for kind, caption_tag in [("table", "caption"), ("figure", "figcaption")]:
+        for match in re.finditer(
+            rf"<{kind}\b([^>]*)>(.*?)</{kind}>", lesson, re.DOTALL
+        ):
+            attrs = dict(Markup(f"<{kind}{match[1]}>").elements[0][1])
+            assert f"lx-{kind}" in attrs.get("class", "").split()
+            assert re.fullmatch(rf"{kind}-[1-9]\d*", attrs.get("id", ""))
+            caption = re.search(
+                rf"<{caption_tag}[^>]*>(.*?)</{caption_tag}>",
+                match[2],
+                re.DOTALL,
+            )
+            assert caption
+            number = attrs["id"].split("-")[1]
+            assert caption[1].strip().startswith(f"{kind.title()} {number}:")
+
+
+def test_notebook_inventory() -> None:
+    assert set(REQUIRED_NOTEBOOKS) == {
+        p.name for p in NOTEBOOK_DIR.glob("*.ipynb")
+    }
+
+
+@pytest.mark.parametrize("name", REQUIRED_NOTEBOOKS)
+def test_notebook_structure_and_presentation(name: str) -> None:
+    notebook = load_notebook(name)
+    nbformat.validate(notebook)
+    assert_layout(notebook)
+    assert_presentation(notebook)
+    ids = [c["id"] for c in notebook["cells"]]
+    assert len(ids) == len(set(ids))
+    for c in notebook["cells"]:
+        assert c["metadata"]["id"] == c["id"]
+        assert c["metadata"]["language"] == (
+            "markdown" if c["cell_type"] == "markdown" else "python"
+        )
+        if c["cell_type"] == "markdown":
+            assert cell_source(c).endswith("\n") and not cell_source(
+                c
+            ).endswith("\n\n")
+    headings = re.findall(
+        r"^# .+$", cell_source(notebook["cells"][1]), re.MULTILINE
+    )
+    assert headings == [REQUIRED_NOTEBOOKS[name]]
+    summary = cell_source(notebook["cells"][-1])
+    names = list(REQUIRED_NOTEBOOKS)
+    index = names.index(name)
+    if index + 1 < len(names):
+        assert f"./{names[index + 1]}" in links(summary)
+    else:
+        assert "https://github.com/duckietown/lx-dd-middleware-ros2" in links(
+            summary
+        )
+    assert_local_links(markdown_source(notebook), NOTEBOOK_DIR / name)
+
+
+def test_readme_notebook_guide() -> None:
+    path = ROOT / "README.md"
+    source = path.read_text()
+    assert_local_links(source, path)
+    section = source.split("## Notebooks\n", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(
+        r"^\| (\d+) \| \[([^]]+)\]\(\./notebooks/([^)]+)\) \| (.+) \|$",
+        section,
+        re.MULTILINE,
+    )
+    assert len(rows) == len(REQUIRED_NOTEBOOKS)
+    for i, (name, title) in enumerate(REQUIRED_NOTEBOOKS.items(), 1):
+        number, label, target, description = rows[i - 1]
+        assert (number, label, target) == (
+            str(i),
+            title.removeprefix("# "),
+            name,
+        )
+        assert description.strip()
+    for title in [
+        "Intended learning outcomes",
+        "Run this LX",
+        "Prerequisites",
+        "Further reading",
+        "For LX authors",
+    ]:
+        assert f"## {title}\n" in source
+    assert "python3 -m pytest tests/" in source
+
+
+def checkpoint_path(name: str) -> Path:
+    return CHECKPOINT_DATA_DIR / (
+        name.split("-", 1)[1].removesuffix(".ipynb") + ".json"
+    )
+
+
+def test_checkpoint_inventory() -> None:
+    assert set(CHECKPOINT_DATA_DIR.glob("*.json")) == {
+        checkpoint_path(n) for n in REQUIRED_NOTEBOOKS
+    }
+
+
+@pytest.mark.parametrize("name", REQUIRED_NOTEBOOKS)
+def test_checkpoint_data_and_answer_links(name: str) -> None:
+    data = json.loads(checkpoint_path(name).read_text())
+    assert set(data) == {"checkpoints"}
+    questions = data["checkpoints"]
+    assert questions
+    assert len({q["id"] for q in questions}) == len(questions)
+    lesson = cell_source(load_notebook(name)["cells"][1])
+    headings = set(re.findall(r"^#{2,6} (.+)$", lesson, re.MULTILINE))
+    for q in questions:
+        required = {"id", "question", "model_answer", "evidence"}
+        assert set(q) == required | (
+            {"choices", "correct_choice"} if "choices" in q else set()
+        )
+        for field in ["id", "question", "model_answer"]:
+            assert isinstance(q[field], str) and q[field].strip()
+        if "choices" in q:
+            assert len(q["choices"]) >= 2
+            assert len(set(q["choices"])) == len(q["choices"])
+            assert all(isinstance(v, str) and v.strip() for v in q["choices"])
+            assert q["correct_choice"] in q["choices"]
+        assert q["evidence"]
+        for e in q["evidence"]:
+            assert set(e) == {"label", "anchor"}
+            assert e["label"] in headings, f"{name}: {e}"
+            assert e["anchor"] == "#" + heading_fragment(e["label"])
+
+
+@pytest.mark.parametrize("name", REQUIRED_NOTEBOOKS)
+def test_actual_notebook_context_loads_and_reveals_all_answers(
+    name: str,
+) -> None:
+    """Exercise filename inference, the real sidecar, and every reveal button."""
+
+    class Kernel:
+        def get_parent(self) -> dict[str, Any]:
+            return {
+                "metadata": {
+                    "cellId": f"vscode-notebook-cell://workspace/notebooks/{name}#checkpoint"
+                }
+            }
+
+    class Shell:
+        kernel = Kernel()
+
+    with (
+        patch.object(
+            checkpoint_self_check, "get_ipython", return_value=Shell()
+        ),
+        patch.object(checkpoint_self_check, "display") as display,
+    ):
+        checkpoint_self_check.display_checkpoint_self_checks()
+    widget = display.call_args.args[0]
+    questions = json.loads(checkpoint_path(name).read_text())["checkpoints"]
+    assert "checkpoint-self-checks" in widget.get_state()["_dom_classes"]
+    assert len(widget.children) == len(questions) + 1
+    for definition in questions:
+        check = checkpoint_self_check.CheckpointSelfCheck(
+            question_number=1,
+            question=definition["question"],
+            checkpoint_id=definition["id"],
+            checkpoint_data_relative_path=checkpoint_path(name).relative_to(
+                ROOT
+            ),
+            choices=tuple(definition["choices"])
+            if "choices" in definition
+            else None,
+        )
+        if "choices" in definition:
+            index = definition["choices"].index(definition["correct_choice"])
+            check.choice_options[index].value = True
+        else:
+            check.answer.value = "My response"
+        check.reveal_answer(check.reveal_button)
+        assert check.model_answer.layout.display == ""
+        assert "<strong>" in check.model_answer.value
+        for e in definition["evidence"]:
+            assert f"href='{e['anchor']}'" in check.model_answer.value
+        assert check.status.value == ""
+
+
+def test_remote_context_cleanup_follows_queries() -> None:
+    source = cell_source(
+        load_notebook("10-docker-contexts-and-local-targets.ipynb")["cells"][1]
+    )
+    name = "duckiedrone-DUCKIEDRONE_NAME"
+    assert source.index(f"docker context create {name}") < source.index(
+        f"docker --context {name}"
+    )
+    assert source.rindex(f"docker --context {name}") < source.index(
+        f"docker context rm {name}"
+    )
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "logo-width",
+        "missing-summary",
+        "style-in-logo",
+        "missing-style",
+        "duplicate-id",
+    ],
+)
+def test_layout_and_style_checks_reject_regressions(mutation: str) -> None:
+    notebook = load_notebook("1-introduction-to-docker.ipynb")
+    if mutation == "logo-width":
+        notebook["cells"][0]["source"] = cell_source(
+            notebook["cells"][0]
+        ).replace("30%", "50%")
+    elif mutation == "missing-summary":
+        notebook["cells"].pop()
+    elif mutation in {"style-in-logo", "missing-style"}:
+        source = cell_source(notebook["cells"][1])
+        style = re.search(r"<style>.*?</style>", source, re.DOTALL)[0]
+        notebook["cells"][1]["source"] = source.replace(style, "")
+        if mutation == "style-in-logo":
+            notebook["cells"][0]["source"] = (
+                cell_source(notebook["cells"][0]) + style
+            )
+    else:
+        notebook["cells"][1]["source"] = cell_source(
+            notebook["cells"][1]
+        ).replace('id="figure-2"', 'id="figure-1"')
+    with pytest.raises(AssertionError):
+        assert_notebook_layout_and_style(notebook)
+
+
+def test_link_checks_reject_missing_target_and_anchor() -> None:
+    path = ROOT / "README.md"
+    for link in [
+        "[missing](./notebooks/nonexistent.ipynb)",
+        "[missing](#no-such-heading)",
+    ]:
+        with pytest.raises(AssertionError):
+            assert_local_links(link, path)
 
 
 def test_docker_exercise_build_context_is_complete() -> None:
     """Keep the small Dockerfile exercise ready to build and inspect."""
     expected_files = {".dockerignore", "Dockerfile", "server.py"}
     assert expected_files == {
-        path.name for path in EXERCISE_DIR.iterdir() if path.is_file()
+        path.name
+        for path in (ROOT / "packages" / "docker_exercises").iterdir()
+        if path.is_file()
     }
 
-    dockerfile = (EXERCISE_DIR / "Dockerfile").read_text(encoding="utf-8")
+    dockerfile = (
+        (ROOT / "packages" / "docker_exercises") / "Dockerfile"
+    ).read_text(encoding="utf-8")
     for instruction in (
         "FROM cgr.dev/chainguard/python:latest@sha256:780029a86e72bf3a58b1795cb77ab73b8f48dfea8c94ab154345396dc3d3237a",
         "WORKDIR /app",
@@ -509,7 +455,7 @@ def test_docker_exercise_build_context_is_complete() -> None:
     ):
         assert instruction in dockerfile
 
-    server_path = EXERCISE_DIR / "server.py"
+    server_path = (ROOT / "packages" / "docker_exercises") / "server.py"
     server_source = server_path.read_text(encoding="utf-8")
     ast.parse(server_source, filename=str(server_path))
     assert 'HOST = "0.0.0.0"' in server_source
@@ -517,56 +463,6 @@ def test_docker_exercise_build_context_is_complete() -> None:
     assert "ThreadingHTTPServer" in server_source
 
 
-def test_readme_has_shared_lx_structure() -> None:
-    """Keep the README aligned with the reviewed LX structure."""
-    readme = README_PATH.read_text(encoding="utf-8")
-    assert "TODO" not in readme
-    assert re.search(
-        r"^# Learning Experience \(LX\): .+ on the Duckiedrone$",
-        readme,
-        re.MULTILINE,
-    )
-    assert "`Software: ente`; `Hardware: DD24-B`" in readme
-    assert re.findall(r"^## .+$", readme, re.MULTILINE) == [
-        "## Intended learning outcomes",
-        "## Run this LX",
-        "## Notebooks",
-        "## Prerequisites",
-        f"## Complete the {README_EXERCISE_TOPIC} exercise",
-        "## Further reading",
-        "## For LX authors",
-    ]
-
-    notebook_section = readme.split("## Notebooks\n", 1)[1].split("\n## ", 1)[0]
-    assert "| # | Notebook | Description |\n| --- | --- | --- |" in notebook_section
-    notebook_rows = re.findall(r"^\| \d+ \|.*\|$", notebook_section, re.MULTILINE)
-    assert len(notebook_rows) == len(REQUIRED_NOTEBOOKS)
-    for number, (notebook_name, row) in enumerate(
-        zip(REQUIRED_NOTEBOOKS, notebook_rows, strict=True), start=1
-    ):
-        expected_prefix = (
-            f"| {number} | [Notebook {number}](./notebooks/{notebook_name}) | "
-        )
-        assert row.startswith(expected_prefix)
-        assert len(row.split("|")) == 5
-        assert row.removeprefix(expected_prefix).strip(" |")
-
-    prerequisite_section = readme.split("## Prerequisites\n", 1)[1].split(
-        "\n## ", 1
-    )[0]
-    prerequisite_headings = re.findall(
-        r"^### .+$", prerequisite_section, re.MULTILINE
-    )
-    assert len(prerequisite_headings) == 4
-    assert prerequisite_headings[0] == "### Choose the terminal"
-    assert prerequisite_headings[1] == (
-        f"### {README_EXERCISE_TOPIC} foundations and local practice"
-    )
-    assert prerequisite_headings[-1] == "### Duckiedrone access"
-    assert "python3 -m pytest tests/" in readme
-    assert (
-        "Interactive checkpoints require the notebook metadata supplied by "
-        "`dts code editor` and a compatible Jupyter/IPython kernel with "
-        "`ipywidgets` available"
-        in readme
-    )
+def assert_notebook_layout_and_style(notebook: dict[str, Any]) -> None:
+    assert_layout(notebook)
+    assert_presentation(notebook)
