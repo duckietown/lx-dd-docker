@@ -6,121 +6,89 @@
 
 `Software: ente`; `Hardware: DD24-B`
 
-Duckiedrone software needs a repeatable environment on the base station and on the Duckiedrone. Differences in installed libraries and setup can otherwise make the same project behave differently on each machine. Docker packages software and its dependencies into images, then runs them in containers.
+In addition to source code, robotics software needs compatible libraries, tools, and startup settings. Docker packages that environment into images and runs applications in containers.
 
-This learning experience (LX) uses small base-station experiments to make that model visible, then connects it to Duckiedrone services and the project workflows used by later LXs. You will learn where software runs, where its data lives, and how to check that an image or container does the intended job.
+This learning experience (LX) introduces Docker through small experiments on your base station. You will inspect containers, build and test a web-server image, preserve data, and connect applications over a Docker network. You will then relate those observations to Duckiedrone services, Docker contexts, the Duckietown Shell, and the Duckietown Workspace.
 
 ## Intended learning outcomes
 
 After completing this LX, learners will be able to:
 
-1. Explain what Docker does and why is it useful, particularly for robotics applications.
-
-2. Explain Docker's client-daemon architecture and how images, layers, containers, virtual machines, registries, tags, and digests relate.
-
-3. Identify the Docker client, Docker daemon, current context, and central processing unit (CPU) architecture used by a Docker host.
-
-4. Distinguish a local terminal, development container, and Docker practice container, then verify the Docker daemon selected by each environment.
-
-5. Apply least-privilege Docker defaults and distinguish the base station's Docker host from a Duckiedrone's Docker host.
-
-6. Run, inspect, enter, stop, and remove clearly named temporary containers.
-
-7. Build a small image from a Dockerfile and verify its local Hypertext Transfer Protocol (HTTP) response.
-
-8. Distinguish container writable layers, named volumes, and read-only bind mounts.
-
-9. Explain Duckiedrone stacks and the paths connecting sensors, Duckietown Postal Service (DTPS), Robot Operating System 2 (ROS 2), and flight control.
-
-10. Verify Docker and `dts` command targets, and distinguish Docker contexts, `dts` host arguments, Secure Shell (SSH) access to a physical Duckiedrone, and a local virtual Duckiedrone shell.
-
-11. Describe the build, delivery, run, and workbench workflows used by later Duckiedrone LXs.
+1. Explain what Docker does and why reproducible software environments are useful in robotics.
+2. Distinguish images, layers, containers, virtual machines, clients, daemons, and registries, and interpret image tags, digests, and platforms.
+3. Identify the daemon receiving a Docker command and distinguish practice resources from physical or virtual Duckiedrone services.
+4. Explain how daemon access, mounts, container permissions, and published ports affect isolation.
+5. Run, inspect, enter, stop, restart, and remove containers, using logs and process information to understand their state.
+6. Build an image from a Dockerfile, inspect its configuration, and verify the application's response through a published port.
+7. Compare container writable layers, named volumes, and bind mounts, and clean up exercise resources by name.
+8. Demonstrate communication between containers and interpret the network, socket, and mount settings in a Duckiedrone Compose configuration.
+9. Use Docker contexts to inspect local and remote daemons, and distinguish context selection from Duckietown Shell target options.
+10. Explain how the Duckietown Shell and Workspace use Docker to support project builds, workbenches, virtual robots, and development environments.
 
 ## Run this LX
 
-Follow the Duckietown Manual's [LX General Instructions](https://docs.duckietown.com/ente/opmanual-dd24/50-learning-experiences/lx-general-procedure.html) to open this LX in a prepared environment. The notebooks provide the topic-specific activities; the prerequisites below describe the local setup.
+Follow the [LX General Instructions](https://docs.duckietown.com/ente/opmanual-dd24/50-learning-experiences/lx-general-procedure.html) to open this LX in a prepared environment. Work through the notebooks in order, run the activities in the terminal specified by each notebook, and answer the checkpoint questions before revealing their answers.
 
 ## Notebooks
 
-Start with [Notebook 1](./notebooks/1-introduction-to-docker.ipynb). The opening chapters establish the image, container, and host model so you can interpret the lifecycle, web-server, and persistence experiments that follow. The Duckiedrone chapters connect that model to its sensor and communication services. The connection and project chapters explain how to reach the right host and run your code on the Duckiedrone. The final development-environment chapter is an optional wrap-up for understanding changes between terminals.
+Notebooks 1–4 establish the concepts and practice environment. Notebooks 5–7 follow containers, images, and data through their lifecycles. Notebooks 8–10 connect those ideas to cooperating services and multiple Docker hosts. Notebooks 11–12 explain how Duckietown packages these operations into development workflows.
 
-| # | Notebook | Description |
+| # | Notebook | What you will learn or do |
 | --- | --- | --- |
-| 1 | [Notebook 1](./notebooks/1-introduction-to-docker.ipynb) | Understand how Docker's client, daemon, and objects provide a repeatable runtime |
-| 2 | [Notebook 2](./notebooks/2-docker-containers-images-and-safe-local-practice.ipynb) | Identify the practice host and distinguish image files from container changes |
-| 3 | [Notebook 3](./notebooks/3-docker-clients-registries-and-platforms.ipynb) | Identify where images come from and which processor architecture can run them |
-| 4 | [Notebook 4](./notebooks/4-docker-security-and-duckiedrone-boundaries.ipynb) | Understand how permissions, mounts, and ports affect host files and services |
-| 5 | [Notebook 5](./notebooks/5-run-and-inspect-containers.ipynb) | Observe a temporary container's process, output, and lifecycle |
-| 6 | [Notebook 6](./notebooks/6-build-and-test-a-local-image.ipynb) | Turn source into an image and check that its web server handles a local request |
-| 7 | [Notebook 7](./notebooks/7-docker-volumes-bind-mounts-and-cleanup.ipynb) | Observe which data survives container removal and how to share host files |
-| 8 | [Notebook 8](./notebooks/8-duckiedrone-docker-hosts-and-stacks.ipynb) | Locate the host and stack responsible for a Duckiedrone service |
-| 9 | [Notebook 9](./notebooks/9-duckiedrone-data-paths.ipynb) | Trace sensor and flight-controller data through drivers and bridges |
-| 10 | [Notebook 10](./notebooks/10-duckiedrone-deployment-boundaries.ipynb) | Match each task to the workflow that supplies its service configuration |
-| 11 | [Notebook 11](./notebooks/11-docker-contexts-and-local-targets.ipynb) | Explain which daemon receives a command and check that it responds |
-| 12 | [Notebook 12](./notebooks/12-remote-duckiedrone-docker-contexts.ipynb) | Compare Docker clients on the Duckiedrone and base station and the resources they inspect |
-| 13 | [Notebook 13](./notebooks/13-dts-devel-build-and-run.ipynb) | Choose where to build, deliver, and run a project image |
-| 14 | [Notebook 14](./notebooks/14-dts-code-workbenches.ipynb) | Start a repeatable project workbench and inspect its running environment |
-| 15 | [Notebook 15](./notebooks/15-virtual-duckiedrone-connections.ipynb) | Find a virtual Duckiedrone and enter its shell |
-| 16 | [Notebook 16](./notebooks/16-development-containers-and-duckietown-workspaces.ipynb) | Explain how changing terminals affects files, tools, and Docker connections |
+| 1 | [Introduction to Docker](./notebooks/1-introduction-to-docker.ipynb) | Explain why containers are useful and how images, registries, clients, and daemons fit together. |
+| 2 | [Practicing with Docker in Duckietown](./notebooks/2-docker-containers-images-and-safe-local-practice.ipynb) | Choose a terminal, inspect connection settings, and verify the local practice daemon. |
+| 3 | [Docker Clients, Registries, and Platforms](./notebooks/3-docker-clients-registries-and-platforms.ipynb) | Read image references, check the daemon's platform, and distinguish images from running and stopped containers. |
+| 4 | [Docker Security and Duckiedrone Boundaries](./notebooks/4-docker-security-and-duckiedrone-boundaries.ipynb) | Understand how permissions, daemon access, file sharing, and port publishing affect container isolation. |
+| 5 | [Run and Inspect Containers](./notebooks/5-run-and-inspect-containers.ipynb) | Follow a container's lifecycle using logs, process and resource inspection, an additional shell, and cleanup. |
+| 6 | [Build and Test a Local Image](./notebooks/6-build-and-test-a-local-image.ipynb) | Read a Dockerfile, build a web-server image, observe caching, and verify a response through a published port. |
+| 7 | [Docker Volumes, Bind Mounts, and Cleanup](./notebooks/7-docker-volumes-bind-mounts-and-cleanup.ipynb) | Observe persistent data, inspect host files through a read-only mount, and remove exercise resources individually. |
+| 8 | [Duckiedrone Docker Hosts and Stacks](./notebooks/8-duckiedrone-docker-hosts-and-stacks.ipynb) | Identify where Duckiedrone services run and how Compose stacks group related containers. |
+| 9 | [Communication Between Containers](./notebooks/9-duckiedrone-container-communication.ipynb) | Connect two practice containers and examine networking, shared sockets, and runtime settings in real Duckiedrone configuration. |
+| 10 | [Docker Contexts and Local Targets: choosing the right host for a command](./notebooks/10-docker-contexts-and-local-targets.ipynb) | Inspect and select daemon connections, then compare remote inspection through an SSH shell and a Docker context. |
+| 11 | [Docker Behind the Duckietown Shell](./notebooks/11-other-docker-uses-in-duckietown.ipynb) | Connect `dts devel`, `dts code`, and virtual-robot commands to the Docker operations they automate. |
+| 12 | [The Duckietown Workspace: Docker for Development](./notebooks/12-development-containers-and-duckietown-workspaces.ipynb) | Compare terminal environments, distinguish inner and outer daemons, and locate project files and persistent storage. |
 
 ## Prerequisites
 
-Before running the command notebooks, complete the Duckietown Manual's [Initial Setup](https://docs.duckietown.com/ente/duckietown-manual/10-setup/setup-introduction.html) so Docker and the Duckietown Shell (`dts`) are installed and configured on the base station.
+Familiarity with shell commands, paths, permissions, and basic networking is useful. The [Linux and Networking LX](https://github.com/duckietown/lx-dd-linux-and-networking) introduces these topics.
 
-Use `dts code editor` to read and edit this LX. Run `dts` and local Docker-practice commands in a separate base-station terminal, where they can use the host's files, configured daemon, and credentials. The browser editor needs no Docker socket; exposing one would give it control over the daemon's resources.
+For the local exercises, use a prepared development environment with Docker, the Duckietown Shell (`dts`), the LX repository, and `curl`. Follow the [Initial Setup instructions](https://docs.duckietown.com/ente/duckietown-manual/10-setup/setup-introduction.html) for your computer. Internet access is needed to obtain images and dependencies that are not already available locally.
 
-### Choose the terminal
+### Choose the terminal and daemon
 
-| Task | Where to run it |
-| --- | --- |
-| Read and edit notebooks and exercise files | `dts code editor` or another editor |
-| Run the local Docker practice notebooks | A base-station terminal connected to a local Docker Engine or Docker Desktop installation |
-| Run `dts` project, workbench, or virtual-Duckiedrone commands | A base-station terminal, outside `dts code editor` |
-| Inspect a Duckiedrone | A shell on the Duckiedrone or an explicitly named Duckiedrone Docker context |
+Read and edit the notebooks using `dts code editor`. Run the shell commands in a separate terminal in your prepared base-station environment. This may be a native Linux environment or the Duckietown Workspace; it is distinct from the LX editor container.
 
-### Docker foundations and local practice
+Before creating resources, follow [Notebook 2](./notebooks/2-docker-containers-images-and-safe-local-practice.ipynb) to check the endpoint, environment overrides, and daemon response. Keep the local activities on the same verified practice daemon so their images, containers, and volumes remain available where you expect them.
 
-[Notebook 1](./notebooks/1-introduction-to-docker.ipynb) can be read before installing Docker. The local practice notebooks need the LX files and a terminal with access to Docker Engine or Docker Desktop; all their commands run on the base station. Interactive checkpoints require the notebook metadata supplied by `dts code editor` and a compatible Jupyter/IPython kernel with `ipywidgets` available. The metadata identifies the current notebook so the helper can load its matching questions.
+The build and bind-mount exercises use files under `packages/docker_exercises/`. Run them from the LX repository root as directed. The shell's files and the daemon's filesystem are separate concerns when using remote connections; [Notebook 12](./notebooks/12-development-containers-and-duckietown-workspaces.ipynb) explains this distinction.
 
-Begin by inspecting the connection settings and contacting the daemon:
+### Robot and project activities
 
-```bash
-docker context show
-printf 'DOCKER_HOST=%s\n' "${DOCKER_HOST:-<unset>}"
-printf 'DOCKER_CONTEXT=%s\n' "${DOCKER_CONTEXT:-<unset>}"
-docker version
-```
+A physical Duckiedrone is not required for the local container, image, storage, and network experiments. Additional activities have their own prerequisites:
 
-`docker context show` reports the selected context name; the two environment variables can override it. A server section in `docker version` confirms that the selected daemon responded. [Notebook 2](./notebooks/2-docker-containers-images-and-safe-local-practice.ipynb) explains how to interpret these results for the local exercises.
+- **Notebook 9:** inspecting live platform configuration requires an existing physical or virtual deployment; the source-reading and local network activities can be completed without one.
+- **Notebook 10:** the remote comparison requires a physical Duckiedrone, configured SSH authentication, and a remote account with Docker access.
+- **Notebook 11:** build and workbench examples require a suitable Duckietown project and its setup instructions; the virtual connection example requires an existing running virtual Duckiedrone. The command-help and source-reading activities explain the wrappers without deploying a project.
+- **Notebook 12:** comparing terminals requires a running Workspace, but its configuration can also be studied without setting one up.
 
-Use the base-station daemon for the local practice resources, whose names begin with `lx-docker-`. Remove only named exercise resources: broad cleanup commands such as `docker system prune` can also remove resources belonging to other projects.
+Use resources you own or have permission to manage. Keep `lx-docker-*` practice resources separate from platform services and remove only the resources identified by each exercise.
 
-### Duckiedrone project workflows
+### Interactive checkpoints
 
-The build and run examples in [Notebook 13](./notebooks/13-dts-devel-build-and-run.ipynb) need a valid Duckietown project. The workbench commands in [Notebook 14](./notebooks/14-dts-code-workbenches.ipynb) also use that project's build settings and startup command. Follow the project's setup instructions to prepare its build and runtime environment.
-
-### Duckiedrone access
-
-Activities on a physical Duckiedrone need its configured connection and setup instructions. Use a Duckiedrone you own or have permission to manage. The local virtual commands in [Notebook 15](./notebooks/15-virtual-duckiedrone-connections.ipynb) need a virtual Duckiedrone set up on the base station. Keep Duckiedrone services separate from the named practice resources when choosing a command target.
-
-## Complete the Docker exercise
-
-The build context for [Notebook 6](./notebooks/6-build-and-test-a-local-image.ipynb) is in `packages/docker_exercises/`. Read its Dockerfile and Python server to see which files enter the image and which process runs. Build it and check the loopback-only web response to verify that the server handles a request through the published port. [Notebook 7](./notebooks/7-docker-volumes-bind-mounts-and-cleanup.ipynb) then shows how data can survive container removal, how a read-only bind mount shares host files, and how to clean up the named exercise resources.
+Checkpoint cells use the notebook context supplied by the editor and a compatible Jupyter/IPython kernel with `ipywidgets`. Use the prepared LX environment for these cells. The shell command blocks are activities to run in the indicated terminal, not commands executed automatically by reading the notebook.
 
 ## Further reading
 
-Each notebook's `Further reading` section is the primary reference for its lesson. This guide groups the course's sources:
-
-- __Docker foundations:__ Docker's official guides to [containers](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/) and [images](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/).
-
-- __Hosts and connections:__ Docker's [contexts documentation](https://docs.docker.com/engine/manage-resources/contexts/).
-
-- __Duckiedrone setup and operation:__ the [Duckiedrone DD24 manual](https://docs.duckietown.com/ente/opmanual-dd24/).
+Each notebook links to references for its topic. For a broader overview, see the [Duckietown Docker introduction](https://docs.duckietown.com/ente/duckietown-manual/70-developer-manual/basics/development/developer-basics-docker.html), Docker's guides to [containers](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/), [images](https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/), and [contexts](https://docs.docker.com/engine/manage-resources/contexts/), and the [Duckiedrone DD24 manual](https://docs.duckietown.com/ente/opmanual-dd24/).
 
 ## For LX authors
 
-Learner material is in `notebooks/` and `packages/`. Structural checks are in `tests/`, and the exercise image recipe is maintained in the paired `lx-dd-docker-recipe` repository. Run the structural checks from the LX root:
+Learner material is in `notebooks/`, the practice web-server build context is in `packages/docker_exercises/`, and checkpoint support is in `packages/checkpoint_self_check.py` and `checkpoint_data/`. The paired [LX recipe repository](https://github.com/duckietown/lx-dd-docker-recipe) supplies the LX environment recipe; it is separate from the image learners build in Notebook 6.
+
+After editing, check notebook links and checkpoint mappings and run the checks from the LX root:
 
 ```bash
 python3 -m pytest tests/
 ```
+
+These checks complement the manual activities; they do not establish that every Docker command works in a learner's environment.
