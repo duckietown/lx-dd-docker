@@ -1,0 +1,59 @@
+{
+  "checkpoints": [
+    {
+      "id": "context-purpose",
+      "question": "What does a Docker context control?",
+      "model_answer": "It stores connection settings for a named Docker target. An explicit `--context` selects those settings for one command.",
+      "evidence": [
+        {
+          "label": "Inspect the current base-station target",
+          "anchor": "#inspect-the-current-base-station-target"
+        }
+      ]
+    },
+    {
+      "id": "one-time-context",
+      "question": "Why is `docker --context NAME version` safer for a one-time check than `docker context use NAME`?",
+      "model_answer": "An explicit `--context NAME` selects that context for one command without changing the saved default. For a stored, non-default context, it takes precedence over `DOCKER_CONTEXT` and `DOCKER_HOST`. The built-in `default` context can still obtain its endpoint from `DOCKER_HOST`, so verify that endpoint before using it for local practice. `docker context use NAME` changes the saved default for later commands, which environment variables can override.",
+      "evidence": [
+        {
+          "label": "Make the base-station target explicit",
+          "anchor": "#make-the-base-station-target-explicit"
+        }
+      ]
+    },
+    {
+      "id": "context-creation-timing",
+      "question": "What does creating an SSH-backed Docker context change, and when does it first contact the remote daemon?",
+      "model_answer": "Creation changes only the local Docker configuration. The remote daemon is contacted when a command actually uses that context.",
+      "evidence": [
+        {
+          "label": "Create a Duckiedrone context",
+          "anchor": "#create-a-duckiedrone-context"
+        }
+      ]
+    },
+    {
+      "id": "separate-inventories",
+      "question": "Why are local images and containers different from a Duckiedrone's images and containers?",
+      "model_answer": "Each daemon owns its own image cache and container store, so the base station and Duckiedrone inventories are separate.",
+      "evidence": [
+        {
+          "label": "Remote Duckiedrone Docker Contexts",
+          "anchor": "#remote-duckiedrone-docker-contexts"
+        }
+      ]
+    },
+    {
+      "id": "context-authorization",
+      "question": "Where does the Docker client run when using an SSH shell on the Duckiedrone or an explicit base-station context, and when is each useful?",
+      "model_answer": "In the SSH shell, the client runs on the Duckiedrone alongside its other tools. With an explicit context, it runs on the base station, which is useful for a targeted status check or script. Both query the same daemon when the remote shell selects the Duckiedrone's local daemon and the context points to that Duckiedrone.",
+      "evidence": [
+        {
+          "label": "Run the same command two ways",
+          "anchor": "#run-the-same-command-two-ways"
+        }
+      ]
+    }
+  ]
+}

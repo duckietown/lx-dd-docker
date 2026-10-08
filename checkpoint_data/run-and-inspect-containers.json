@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "docker-pull",
+      "question": "What does `docker pull alpine:3.21` add to the local Docker system?",
+      "model_answer": "It fetches missing image layers from a registry and makes the `alpine:3.21` image available in the local image cache.",
+      "evidence": [
+        {
+          "label": "Prepare one image",
+          "anchor": "#prepare-one-image"
+        }
+      ]
+    },
+    {
+      "id": "docker-run",
+      "question": "What does `docker run` create from an image?",
+      "model_answer": "It creates a fresh container instance and starts that container's main process with the requested configuration.",
+      "evidence": [
+        {
+          "label": "Run a temporary command",
+          "anchor": "#run-a-temporary-command"
+        }
+      ]
+    },
+    {
+      "id": "stop-and-remove",
+      "question": "Why does the `lx-docker-sleeper` example use `docker container rm` after `docker stop`?",
+      "model_answer": "Stopping leaves the named container in a stopped state, so it can be inspected. Removing it then cleans up that exact container instead of relying on automatic removal.",
+      "evidence": [
+        {
+          "label": "Container lifecycle summary",
+          "anchor": "#container-lifecycle-summary"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "checkpoints": [
+    {
+      "id": "build-context",
+      "question": "What is a Docker build context?",
+      "model_answer": "It is the collection of files made available to the builder. In this exercise, the context is `packages/docker_exercises`, with files excluded according to `.dockerignore`. `COPY` source paths are relative to that context's root.",
+      "evidence": [
+        {
+          "label": "Understand the build context",
+          "anchor": "#understand-the-build-context"
+        }
+      ]
+    },
+    {
+      "id": "expose-and-publish",
+      "question": "What is the difference between `EXPOSE 8080` and `--publish 127.0.0.1:8088:8080`?",
+      "model_answer": "`EXPOSE` documents an intended container port. The `--publish` option actually forwards host port `8088` to container port `8080` at runtime.",
+      "evidence": [
+        {
+          "label": "Read the Dockerfile as a sequence",
+          "anchor": "#read-the-dockerfile-as-a-sequence"
+        },
+        {
+          "label": "Start the web server",
+          "anchor": "#start-the-web-server"
+        }
+      ]
+    },
+    {
+      "id": "published-loopback-context",
+      "question": "When the later `curl` command uses `127.0.0.1:8088`, what does that address name, and what would `127.0.0.1` name inside the web container?",
+      "model_answer": "It reaches the base-station side of the published port mapping because the client runs on the base station. Within the web container, the same loopback address reaches that container rather than the base station.",
+      "evidence": [
+        {
+          "label": "Follow the request through the mapping",
+          "anchor": "#follow-the-request-through-the-mapping"
+        }
+      ]
+    },
+    {
+      "id": "curl-verification",
+      "question": "Why request the web server with `curl` after checking the container, and what does the expected response establish?",
+      "model_answer": "The expected response shows that the server handled an HTTP request through the published host port. This checks the application's behavior and the port mapping together.",
+      "evidence": [
+        {
+          "label": "Request and verify the response",
+          "anchor": "#request-and-verify-the-response"
+        }
+      ]
+    }
+  ]
+}

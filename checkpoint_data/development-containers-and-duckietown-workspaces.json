@@ -1,0 +1,70 @@
+{
+  "checkpoints": [
+    {
+      "id": "terminal-tools",
+      "question": "Why might `dts` be available in the Workspace but absent from a terminal directly on your computer?",
+      "model_answer": "The Workspace provides its own tools and filesystem. A terminal outside it uses the host environment, where those tools may not be installed.",
+      "evidence": [
+        {
+          "label": "A development environment inside a container",
+          "anchor": "#a-development-environment-inside-a-container"
+        }
+      ]
+    },
+    {
+      "id": "two-dts-installations",
+      "question": "Why can separate `dts` installations inside and outside the Workspace be useful?",
+      "model_answer": "The host installation makes Duckietown workflows available from a host terminal. The Workspace installation makes them available with its prepared development tools, files, and configuration. Both can be useful when you work in both environments, but two installations are not required if you only use one environment and do not by themselves create two Docker daemons.",
+      "evidence": [
+        {
+          "label": "Compare two terminals",
+          "anchor": "#compare-two-terminals"
+        }
+      ]
+    },
+    {
+      "id": "inner-and-outer",
+      "question": "Which daemon manages the Workspace container itself, and which manages its local practice containers?",
+      "model_answer": "The outer daemon manages the Workspace container. With the Workspace's inner daemon selected, that inner daemon manages the practice containers.",
+      "evidence": [
+        {
+          "label": "Docker can run inside Docker",
+          "anchor": "#docker-can-run-inside-docker"
+        }
+      ]
+    },
+    {
+      "id": "daemon-identity",
+      "question": "What can comparing daemon IDs reveal when two terminals show different tools or files?",
+      "model_answer": "It helps determine whether the Docker clients reached the same daemon. The shell environment and Docker connection are separate concerns.",
+      "evidence": [
+        {
+          "label": "Compare two terminals",
+          "anchor": "#compare-two-terminals"
+        }
+      ]
+    },
+    {
+      "id": "workspace-storage",
+      "question": "Does a persistent Workspace home volume automatically synchronize a repository with a clone outside the Workspace?",
+      "model_answer": "No. The volume can retain files across container recreation, but the repositories can still have different branches, commits, and uncommitted edits.",
+      "evidence": [
+        {
+          "label": "Where are Workspace files stored?",
+          "anchor": "#where-are-workspace-files-stored"
+        }
+      ]
+    },
+    {
+      "id": "remote-mount-source",
+      "question": "When the Workspace client targets a physical Duckiedrone, where must a bind-mount source exist?",
+      "model_answer": "On the Duckiedrone, because the daemon resolves the source path on its own host. Docker does not upload the Workspace directory merely because its path appears in a mount option.",
+      "evidence": [
+        {
+          "label": "Which filesystem supplies a bind mount?",
+          "anchor": "#which-filesystem-supplies-a-bind-mount"
+        }
+      ]
+    }
+  ]
+}

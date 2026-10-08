@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "named-volume-persistence",
+      "question": "Why can `note.txt` still be read after the writer container is removed?",
+      "model_answer": "The file was written through `/notes` into the named volume, not just into the container's writable layer. `--rm` removes the writer container but not its explicitly named volume. A new reader can mount that volume and read the note.",
+      "evidence": [
+        {
+          "label": "Persist one file in a named volume",
+          "anchor": "#persist-one-file-in-a-named-volume"
+        }
+      ]
+    },
+    {
+      "id": "bind-mount-and-volume",
+      "question": "How does a bind mount differ from a named volume?",
+      "model_answer": "A bind mount exposes a specific path on the Docker daemon's host, which is the local practice host in this exercise. Docker manages a named volume's storage separately, and containers select it by volume name.",
+      "evidence": [
+        {
+          "label": "Inspect a read-only bind mount",
+          "anchor": "#inspect-a-read-only-bind-mount"
+        }
+      ]
+    },
+    {
+      "id": "read-only-bind-mount",
+      "question": "Why does this LX use a read-only bind mount?",
+      "model_answer": "It lets the container inspect the supplied host files while preventing changes through that mount. Read-only access still exposes the file contents, and it does not prevent another container or mount from providing write access.",
+      "evidence": [
+        {
+          "label": "Inspect a read-only bind mount",
+          "anchor": "#inspect-a-read-only-bind-mount"
+        }
+      ]
+    }
+  ]
+}

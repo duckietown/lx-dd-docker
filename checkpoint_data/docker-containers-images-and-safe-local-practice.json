@@ -1,0 +1,37 @@
+{
+  "checkpoints": [
+    {
+      "id": "target-settings",
+      "question": "Why check the Docker endpoint and environment overrides before creating a practice container?",
+      "model_answer": "A base-station client can target a local or remote daemon. The endpoint and overrides identify where the operation will happen.",
+      "evidence": [
+        {
+          "label": "Identify the Docker target",
+          "anchor": "#identify-the-docker-target"
+        }
+      ]
+    },
+    {
+      "id": "client-and-server",
+      "question": "If `docker --version` succeeds but `docker version` reports a connection error, what have you confirmed?",
+      "model_answer": "The Docker client is available. You have not confirmed that it can communicate with the selected daemon.",
+      "evidence": [
+        {
+          "label": "Verify that the daemon responds",
+          "anchor": "#verify-that-the-daemon-responds"
+        }
+      ]
+    },
+    {
+      "id": "practice-ownership",
+      "question": "Does a name beginning with `lx-docker-` prove that a container is yours to remove?",
+      "model_answer": "No. The prefix is a naming convention. Confirm that you created the resource for this LX before removing it.",
+      "evidence": [
+        {
+          "label": "Keep practice resources identifiable",
+          "anchor": "#keep-practice-resources-identifiable"
+        }
+      ]
+    }
+  ]
+}
